@@ -1,2 +1,6 @@
 2025-07-09 17:19:58 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
 2025-07-09 17:19:58 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 17:20:00 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 17:20:00 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 17:20:02 | INFO | ecommerce | Supabase clients initialized successfully
+2025-07-09 17:20:04 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
