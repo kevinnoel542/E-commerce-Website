@@ -139,125 +139,6 @@ async def register(data: RegisterData):
             detail="Registration failed"
         )
 
-@router.post("/admin/register", response_model=AuthResponse)
-async def register_admin(data: AdminRegisterData):
-    """Register a new admin user"""
-    try:
-        from app.core.config import ADMIN_SECRET
-
-        auth_logger.info(f"Admin registration attempt for {data.email}")
-
-        # Verify admin secret
-        if data.admin_secret != ADMIN_SECRET:
-            log_auth_event("ADMIN_REGISTER", data.email, False)
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Invalid admin secret"
-            )
-
-        # Check if user already exists
-        existing_users = await db.get_records("profiles", {"email": data.email})
-        if existing_users:
-            log_auth_event("ADMIN_REGISTER", data.email, False)
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this email already exists"
-            )
-
-        # Register with Supabase Auth
-        try:
-            logger.info(f"Attempting Supabase admin registration for {data.email}")
-            response = supabase.auth.sign_up({
-                "email": data.email,
-                "password": data.password,
-                "options": {
-                    "data": {
-                        "full_name": data.full_name,
-                        "phone": data.phone,
-                        "role": "admin"
-                    }
-                }
-            })
-            logger.info(f"Supabase admin registration response for {data.email}: user_id={response.user.id if response.user else 'None'}")
-        except Exception as auth_error:
-            error_message = str(auth_error)
-            logger.error(f"Supabase admin registration failed for {data.email}: {error_message}")
-
-            if "429" in error_message or "rate limit" in error_message.lower():
-                log_auth_event("ADMIN_REGISTER", data.email, False)
-                raise HTTPException(
-                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                    detail="Too many registration attempts. Please wait a moment and try again."
-                )
-            else:
-                log_auth_event("ADMIN_REGISTER", data.email, False)
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Admin registration failed: {error_message}"
-                )
-
-        if response.user:
-            logger.info(f"Admin user created in Supabase auth: {response.user.id}")
-
-            # Create admin profile in our database
-            profile_data = {
-                "id": response.user.id,
-                "email": data.email,
-                "full_name": data.full_name,
-                "phone": data.phone,
-                "role": UserRole.ADMIN,
-                "created_at": datetime.utcnow().isoformat(),
-                "is_active": True,
-                "email_verified": response.user.email_confirmed_at is not None
-            }
-
-            try:
-                # Use admin client to create profile
-                logger.info(f"Creating admin profile for user {response.user.id}")
-                from app.db.client import admin_supabase
-                admin_response = admin_supabase.table("profiles").insert(profile_data).execute()
-
-                if admin_response.data:
-                    logger.info(f"Admin profile created successfully for {data.email}")
-                    log_auth_event("ADMIN_REGISTER", data.email, True)
-                    return AuthResponse(
-                        message="Admin user registered successfully. Please check your email for verification.",
-                        user=UserProfile(**profile_data)
-                    )
-                else:
-                    logger.warning(f"Admin profile creation returned no data for {data.email}")
-                    log_auth_event("ADMIN_REGISTER", data.email, True)
-                    return AuthResponse(
-                        message="Admin user registered successfully. Profile will be created on first login.",
-                        user=None
-                    )
-            except Exception as profile_error:
-                logger.error(f"Admin profile creation failed for {data.email}: {str(profile_error)}")
-                log_auth_event("ADMIN_REGISTER", data.email, True)
-                return AuthResponse(
-                    message="Admin user registered successfully. Profile will be created on first login.",
-                    user=None
-                )
-        else:
-            error_message = "Admin registration failed"
-            if hasattr(response, 'error') and response.error:
-                error_message = response.error.message
-
-            log_auth_event("ADMIN_REGISTER", data.email, False)
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=error_message
-            )
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        log_error(e, f"Admin registration for {data.email}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Admin registration failed"
-        )
-
 @router.post("/login", response_model=AuthResponse)
 async def login(data: LoginData):
     """Login user and return tokens"""
@@ -334,11 +215,10 @@ async def login(data: LoginData):
                     detail="Account is deactivated"
                 )
             
-            # Create tokens with role
+            # Create tokens
             token_data = {
                 "sub": data.email,
-                "user_id": response.user.id,
-                "role": profile_data.get("role", "user")
+                "user_id": response.user.id
             }
             tokens = create_token_pair(token_data)
             

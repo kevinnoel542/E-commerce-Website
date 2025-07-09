@@ -334,11 +334,10 @@ async def login(data: LoginData):
                     detail="Account is deactivated"
                 )
             
-            # Create tokens with role
+            # Create tokens
             token_data = {
                 "sub": data.email,
-                "user_id": response.user.id,
-                "role": profile_data.get("role", "user")
+                "user_id": response.user.id
             }
             tokens = create_token_pair(token_data)
             

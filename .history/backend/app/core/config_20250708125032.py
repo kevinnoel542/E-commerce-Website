@@ -36,9 +36,6 @@ SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 # Currency Configuration
 DEFAULT_CURRENCY = os.getenv("DEFAULT_CURRENCY", "TZS")
 
-# Admin Configuration
-ADMIN_SECRET = os.getenv("ADMIN_SECRET", "super-secret-admin-key-change-in-production")
-
 # Validation
 def validate_config():
     """Validate that all required environment variables are set"""

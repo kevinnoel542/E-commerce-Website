@@ -257,7 +257,7 @@ async def delete_category(
         await db.update_record("categories", category_id, {
             "is_active": False,
             "updated_at": datetime.utcnow().isoformat(),
-            "updated_by": current_admin["user_id"]
+            "updated_by": current_user["user_id"]
         })
         
         return {"message": "Category deleted successfully"}
