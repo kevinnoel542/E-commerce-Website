@@ -150,15 +150,12 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Enable Row Level Security for order_items
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
--- Order items policies (drop existing ones first to avoid conflicts)
-DROP POLICY IF EXISTS "Users can view own order items" ON order_items;
-DROP POLICY IF EXISTS "Users can create order items for own orders" ON order_items;
-
+-- Order items policies (inherit from orders)
 CREATE POLICY "Users can view own order items" ON order_items
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM orders
-            WHERE orders.id = order_items.order_id
+            SELECT 1 FROM orders 
+            WHERE orders.id = order_items.order_id 
             AND orders.user_id = auth.uid()
         )
     );
@@ -166,8 +163,8 @@ CREATE POLICY "Users can view own order items" ON order_items
 CREATE POLICY "Users can create order items for own orders" ON order_items
     FOR INSERT WITH CHECK (
         EXISTS (
-            SELECT 1 FROM orders
-            WHERE orders.id = order_items.order_id
+            SELECT 1 FROM orders 
+            WHERE orders.id = order_items.order_id 
             AND orders.user_id = auth.uid()
         )
     );
@@ -195,14 +192,12 @@ CREATE TABLE IF NOT EXISTS payments (
 -- Enable Row Level Security for payments
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
--- Payments policies (drop existing ones first to avoid conflicts)
-DROP POLICY IF EXISTS "Users can view payments for own orders" ON payments;
-
+-- Payments policies (users can only see payments for their orders)
 CREATE POLICY "Users can view payments for own orders" ON payments
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM orders
-            WHERE orders.id = payments.order_id
+            SELECT 1 FROM orders 
+            WHERE orders.id = payments.order_id 
             AND orders.user_id = auth.uid()
         )
     );

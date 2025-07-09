@@ -35,25 +35,6 @@ class RegisterData(BaseModel):
             raise ValueError('Full name must be at least 2 characters long')
         return v.strip()
 
-class AdminRegisterData(BaseModel):
-    email: EmailStr
-    password: str
-    full_name: str
-    phone: Optional[str] = None
-    admin_secret: str
-
-    @validator('password')
-    def validate_password(cls, v):
-        if len(v) < 6:
-            raise ValueError('Password must be at least 6 characters long')
-        return v
-
-    @validator('full_name')
-    def validate_full_name(cls, v):
-        if len(v.strip()) < 2:
-            raise ValueError('Full name must be at least 2 characters long')
-        return v.strip()
-
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
@@ -91,7 +72,6 @@ class UserProfile(BaseModel):
     email: EmailStr
     full_name: str
     phone: Optional[str] = None
-    role: UserRole = UserRole.USER
     created_at: datetime
     updated_at: Optional[datetime] = None
     is_active: bool = True

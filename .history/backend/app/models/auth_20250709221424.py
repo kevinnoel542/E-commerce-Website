@@ -91,7 +91,6 @@ class UserProfile(BaseModel):
     email: EmailStr
     full_name: str
     phone: Optional[str] = None
-    role: UserRole = UserRole.USER
     created_at: datetime
     updated_at: Optional[datetime] = None
     is_active: bool = True

@@ -195,14 +195,12 @@ CREATE TABLE IF NOT EXISTS payments (
 -- Enable Row Level Security for payments
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
--- Payments policies (drop existing ones first to avoid conflicts)
-DROP POLICY IF EXISTS "Users can view payments for own orders" ON payments;
-
+-- Payments policies (users can only see payments for their orders)
 CREATE POLICY "Users can view payments for own orders" ON payments
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM orders
-            WHERE orders.id = payments.order_id
+            SELECT 1 FROM orders 
+            WHERE orders.id = payments.order_id 
             AND orders.user_id = auth.uid()
         )
     );

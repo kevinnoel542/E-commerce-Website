@@ -236,10 +236,10 @@ async def update_category(
 @router.delete("/categories/{category_id}")
 async def delete_category(
     category_id: str,
-    current_admin: dict = Depends(require_admin)
+    current_user: dict = Depends(get_current_user)
 ):
     """Delete a category (admin only)"""
-    log_request("DELETE", f"/api/v1/products/categories/{category_id}", current_admin["email"])
+    log_request("DELETE", f"/api/v1/products/categories/{category_id}", current_user["email"])
     
     try:
         from app.db.client import db
@@ -257,7 +257,7 @@ async def delete_category(
         await db.update_record("categories", category_id, {
             "is_active": False,
             "updated_at": datetime.utcnow().isoformat(),
-            "updated_by": current_admin["user_id"]
+            "updated_by": current_user["user_id"]
         })
         
         return {"message": "Category deleted successfully"}
