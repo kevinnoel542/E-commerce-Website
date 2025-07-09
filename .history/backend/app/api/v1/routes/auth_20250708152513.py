@@ -1,0 +1,327 @@
+from fastapi import APIRouter, HTTPException, status, Depends
+from app.models.auth import (
+    LoginData, RegisterData, TokenResponse, RefreshTokenRequest,
+    PasswordResetRequest, ChangePasswordRequest, UserProfile, 
+    UpdateProfileRequest, AuthResponse
+)
+from app.core.security import (
+    create_token_pair, verify_token, get_current_user, 
+    verify_password, get_password_hash
+)
+from app.db.client import supabase, db
+from app.core.logging import auth_logger, log_auth_event, log_error
+from datetime import datetime
+import uuid
+
+router = APIRouter()
+
+@router.post("/register", response_model=AuthResponse)
+async def register(data: RegisterData):
+    """Register a new user"""
+    try:
+        auth_logger.info(f"Registration attempt for {data.email}")
+        
+        # Check if user already exists
+        existing_users = await db.get_records("profiles", {"email": data.email})
+        if existing_users:
+            log_auth_event("REGISTER", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists"
+            )
+        
+        # Register with Supabase Auth
+        response = supabase.auth.sign_up({
+            "email": data.email,
+            "password": data.password,
+            "options": {
+                "data": {
+                    "full_name": data.full_name,
+                    "phone": data.phone
+                }
+            }
+        })
+        
+        if response.user:
+            # Create user profile in our database using admin client to bypass RLS
+            profile_data = {
+                "id": response.user.id,
+                "email": data.email,
+                "full_name": data.full_name,
+                "phone": data.phone,
+                "created_at": datetime.utcnow().isoformat(),
+                "is_active": True,
+                "email_verified": response.user.email_confirmed_at is not None
+            }
+
+            try:
+                # Use admin client to bypass RLS policies for profile creation
+                from app.db.client import admin_supabase
+                admin_response = admin_supabase.table("profiles").insert(profile_data).execute()
+
+                if admin_response.data:
+                    log_auth_event("REGISTER", data.email, True)
+                    return AuthResponse(
+                        message="User registered successfully. Please check your email for verification.",
+                        user=UserProfile(**profile_data)
+                    )
+                else:
+                    # Profile creation failed, but user was created in auth
+                    log_auth_event("REGISTER", data.email, True)
+                    return AuthResponse(
+                        message="User registered successfully. Profile will be created on first login.",
+                        user=None
+                    )
+            except Exception as profile_error:
+                # Profile creation failed, but user was created in auth
+                logger.warning(f"Profile creation failed for {data.email}: {str(profile_error)}")
+                log_auth_event("REGISTER", data.email, True)
+                return AuthResponse(
+                    message="User registered successfully. Profile will be created on first login.",
+                    user=None
+                )
+        else:
+            error_message = "Registration failed"
+            if hasattr(response, 'error') and response.error:
+                error_message = response.error.message
+            
+            log_auth_event("REGISTER", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error_message
+            )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Registration for {data.email}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Registration failed"
+        )
+
+@router.post("/login", response_model=AuthResponse)
+async def login(data: LoginData):
+    """Login user and return tokens"""
+    try:
+        auth_logger.info(f"Login attempt for {data.email}")
+        
+        # Authenticate with Supabase
+        response = supabase.auth.sign_in_with_password({
+            "email": data.email,
+            "password": data.password
+        })
+        
+        if response.user:
+            # Get user profile
+            profile_data = await db.get_record("profiles", response.user.id)
+            if not profile_data:
+                # Create profile if it doesn't exist (for existing Supabase users)
+                profile_data = {
+                    "id": response.user.id,
+                    "email": data.email,
+                    "full_name": response.user.user_metadata.get("full_name", ""),
+                    "phone": response.user.user_metadata.get("phone", ""),
+                    "created_at": datetime.utcnow().isoformat(),
+                    "is_active": True,
+                    "email_verified": response.user.email_confirmed_at is not None
+                }
+                await db.create_record("profiles", profile_data)
+            
+            # Check if user is active
+            if not profile_data.get("is_active", True):
+                log_auth_event("LOGIN", data.email, False)
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Account is deactivated"
+                )
+            
+            # Create tokens
+            token_data = {
+                "sub": data.email,
+                "user_id": response.user.id
+            }
+            tokens = create_token_pair(token_data)
+            
+            log_auth_event("LOGIN", data.email, True)
+            
+            return AuthResponse(
+                message="Login successful",
+                user=UserProfile(**profile_data),
+                tokens=TokenResponse(**tokens)
+            )
+        else:
+            error_message = "Invalid credentials"
+            if hasattr(response, 'error') and response.error:
+                error_message = response.error.message
+            
+            log_auth_event("LOGIN", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=error_message
+            )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Login for {data.email}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Login failed"
+        )
+
+@router.post("/refresh", response_model=TokenResponse)
+async def refresh_token(data: RefreshTokenRequest):
+    """Refresh access token using refresh token"""
+    try:
+        # Verify refresh token
+        payload = verify_token(data.refresh_token)
+        
+        if payload.get("type") != "refresh":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token type"
+            )
+        
+        # Create new token pair
+        token_data = {
+            "sub": payload.get("sub"),
+            "user_id": payload.get("user_id")
+        }
+        tokens = create_token_pair(token_data)
+        
+        auth_logger.info(f"Token refreshed for {payload.get('sub')}")
+        return TokenResponse(**tokens)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, "Token refresh")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Token refresh failed"
+        )
+
+@router.post("/logout")
+async def logout(current_user: dict = Depends(get_current_user)):
+    """Logout user (client should discard tokens)"""
+    try:
+        # In a production app, you might want to blacklist the token
+        auth_logger.info(f"User logged out: {current_user['email']}")
+        return {"message": "Logged out successfully"}
+    
+    except Exception as e:
+        log_error(e, f"Logout for {current_user.get('email', 'unknown')}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Logout failed"
+        )
+
+@router.get("/profile", response_model=UserProfile)
+async def get_profile(current_user: dict = Depends(get_current_user)):
+    """Get current user profile"""
+    try:
+        profile_data = await db.get_record("profiles", current_user["user_id"])
+        if not profile_data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Profile not found"
+            )
+        
+        return UserProfile(**profile_data)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Getting profile for {current_user.get('email', 'unknown')}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve profile"
+        )
+
+@router.put("/profile", response_model=UserProfile)
+async def update_profile(
+    profile_data: UpdateProfileRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update user profile"""
+    try:
+        update_dict = profile_data.dict(exclude_unset=True)
+        update_dict["updated_at"] = datetime.utcnow().isoformat()
+        
+        updated_profile = await db.update_record("profiles", current_user["user_id"], update_dict)
+        if not updated_profile:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Profile not found"
+            )
+        
+        auth_logger.info(f"Profile updated for {current_user['email']}")
+        return UserProfile(**updated_profile)
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Updating profile for {current_user.get('email', 'unknown')}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update profile"
+        )
+
+@router.post("/change-password")
+async def change_password(
+    password_data: ChangePasswordRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Change user password"""
+    try:
+        # Update password in Supabase
+        response = supabase.auth.update_user({
+            "password": password_data.new_password
+        })
+        
+        if response.user:
+            auth_logger.info(f"Password changed for {current_user['email']}")
+            return {"message": "Password changed successfully"}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to change password"
+            )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Changing password for {current_user.get('email', 'unknown')}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to change password"
+        )
+
+@router.post("/forgot-password")
+async def forgot_password(data: PasswordResetRequest):
+    """Send password reset email"""
+    try:
+        response = supabase.auth.reset_password_email(data.email)
+        auth_logger.info(f"Password reset requested for {data.email}")
+        return {"message": "Password reset email sent"}
+    
+    except Exception as e:
+        log_error(e, f"Password reset for {data.email}")
+        # Don't reveal if email exists or not
+        return {"message": "If the email exists, a password reset link has been sent"}
+
+@router.get("/verify-email")
+async def verify_email(token: str):
+    """Verify email address"""
+    try:
+        # This would typically be handled by Supabase's built-in email verification
+        # You can customize this endpoint based on your needs
+        return {"message": "Email verification handled by Supabase"}
+    
+    except Exception as e:
+        log_error(e, "Email verification")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email verification failed"
+        )
