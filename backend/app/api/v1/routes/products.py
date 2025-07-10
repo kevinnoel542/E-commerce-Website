@@ -132,15 +132,34 @@ async def delete_product(
 async def get_categories():
     """Get list of all categories"""
     log_request("GET", "/api/v1/products/categories/")
-    
+
     try:
         from app.db.client import db
+        from app.core.logging import logger
+
+        logger.info("Attempting to fetch categories from database")
         categories_data = await db.get_records("categories", {"is_active": True})
+        logger.info(f"Found {len(categories_data)} categories")
+
+        if not categories_data:
+            # Return empty list if no categories found
+            return []
+
         return [Category(**category) for category in categories_data]
     except Exception as e:
+        from app.core.logging import logger
+        logger.error(f"Error fetching categories: {str(e)}")
+
+        # Check if it's a table not found error
+        if "relation" in str(e).lower() and "does not exist" in str(e).lower():
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Categories table not found. Please run database setup."
+            )
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve categories"
+            detail=f"Failed to retrieve categories: {str(e)}"
         )
 
 @router.post("/categories/", response_model=Category)
@@ -192,9 +211,19 @@ async def get_category(category_id: str):
     except HTTPException:
         raise
     except Exception as e:
+        from app.core.logging import logger
+        logger.error(f"Error fetching category {category_id}: {str(e)}")
+
+        # Check if it's a table not found error
+        if "relation" in str(e).lower() and "does not exist" in str(e).lower():
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Categories table not found. Please run database setup."
+            )
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve category"
+            detail=f"Failed to retrieve category: {str(e)}"
         )
 
 @router.put("/categories/{category_id}", response_model=Category)

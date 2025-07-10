@@ -1,25 +1,31 @@
-import requests
+import stripe
 import uuid
 from typing import Dict, Any, Optional
 from decimal import Decimal
 from datetime import datetime
 from app.core.config import (
-    FLUTTERWAVE_SECRET_KEY, FLUTTERWAVE_PUBLIC_KEY, 
+    STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY,
     PAYMENT_SUCCESS_URL, PAYMENT_CANCEL_URL, DEFAULT_CURRENCY
 )
 from app.core.logging import payment_logger, log_payment_event, log_error
 from app.db.client import db
 from fastapi import HTTPException, status
 
+# Initialize Stripe
+stripe.api_key = STRIPE_SECRET_KEY
+
 class PaymentService:
-    """Service for handling payments with Flutterwave"""
-    
+    """Service for handling payments with Stripe"""
+
     def __init__(self):
-        self.base_url = "https://api.flutterwave.com/v3"
-        self.headers = {
-            "Authorization": f"Bearer {FLUTTERWAVE_SECRET_KEY}",
-            "Content-Type": "application/json"
-        }
+        self.secret_key = STRIPE_SECRET_KEY
+        self.publishable_key = STRIPE_PUBLISHABLE_KEY
+
+        if not self.secret_key:
+            raise ValueError("Stripe secret key not configured")
+
+        # Set the API key for stripe
+        stripe.api_key = self.secret_key
     
     async def create_payment_link(self, email: str, amount: Decimal, 
                                  order_id: str, customer_name: str = "",

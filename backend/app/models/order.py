@@ -104,6 +104,12 @@ class Order(BaseModel):
     class Config:
         from_attributes = True
 
+class PaymentRequest(BaseModel):
+    order_id: str
+    payment_method: str = "card"  # card, bank_transfer, mobile_money
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
+
 class OrderResponse(BaseModel):
     id: str
     order_number: str

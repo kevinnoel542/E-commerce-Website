@@ -1,0 +1,370 @@
+2025-07-10 01:45:02 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 01:45:02 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 01:45:04 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 01:45:04 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 01:45:06 | INFO | app.db.client | Supabase clients initialized successfully
+2025-07-10 01:49:37 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 01:49:38 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 01:49:40 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 01:49:40 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 01:49:44 | INFO | app.db.client | Supabase clients initialized successfully
+2025-07-10 01:50:07 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
+2025-07-10 02:00:01 | INFO | ecommerce.auth | Login attempt for starkalyboy@gmail.com
+2025-07-10 02:00:01 | INFO | ecommerce | Attempting Supabase login for starkalyboy@gmail.com
+2025-07-10 02:00:02 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5.0 socket_options=None
+2025-07-10 02:00:02 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719BD96E40>
+2025-07-10 02:00:02 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x00000171994E59A0> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5.0
+2025-07-10 02:00:02 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5D4690>
+2025-07-10 02:00:02 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'POST']>
+2025-07-10 02:00:02 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:00:02 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'POST']>
+2025-07-10 02:00:02 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:00:02 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'POST']>
+2025-07-10 02:00:03 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:00:46 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'95cb707a29278a3e-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Origin, Accept-Encoding'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'146'), (b'Set-Cookie', b'__cf_bm=yLRGDNl04A8maV5og2SzCtVB9q4_qiMOjlmBEplxr_Q-1752102046-1.0.1.1-f0uXzF3QNOsBSwAbHlHxLXMhdrj2iX6MsngYbgs5jT6DTa63gFqNVbvrCr3ylub0Is2bBRu7wWoqBonmLcx4VMfDg5RuRbk3igSSzQ.wnYc; path=/; expires=Wed, 09-Jul-25 23:30:46 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:00:03 | INFO | httpx | HTTP Request: POST https://nluxtoziartsvilflbtf.supabase.co/auth/v1/token?grant_type=password "HTTP/1.1 200 OK"
+2025-07-10 02:00:03 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'POST']>
+2025-07-10 02:00:03 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:00:03 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:00:03 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:00:03 | INFO | ecommerce | Supabase login response for starkalyboy@gmail.com: user_id=8716c5ff-5642-4fed-aa1d-33498e3cfe4d
+2025-07-10 02:00:04 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:00:04 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:00:06 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:00:06 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5D60D0>
+2025-07-10 02:00:06 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C27A9F0> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:00:06 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719BD7ED70>
+2025-07-10 02:00:06 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:00:07 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:00:07 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:00:07 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:00:07 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:00:08 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:00:50 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb7094e9fe8a3f-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'54'), (b'Set-Cookie', b'__cf_bm=3RqhyJq_UjJkmhwHRi6mn9XiCP1cOtbGtkcS84tO.VQ-1752102050-1.0.1.1-q167OjuGmoqbeJuOfZBIQo8cEZTVvdjg1EFM2xm0uI_Vv7PC3FIW7ia64dNAxDt00sZ38tpyQTCI3ZKUJ8HKitG5HqlCNJm5oI2bRCDb79A; path=/; expires=Wed, 09-Jul-25 23:30:50 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:00:08 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:00:08 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:00:08 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:00:08 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:00:08 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:00:08 | INFO | ecommerce.auth | Auth LOGIN: starkalyboy@gmail.com | Status: SUCCESS
+2025-07-10 02:01:26 | INFO | ecommerce | API Request: POST /api/v1/products/ | User: starkalyboy@gmail.com
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5FC180>
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C27A9F0> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:01:26 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5E4EF0>
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:02:10 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb7288dcfb8a3f-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/products?select=%2A&sku=eq.TR89W'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'20'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:01:27 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/products?select=%2A&sku=eq.TR89W "HTTP/1.1 200 OK"
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:01:27 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:01:27 | ERROR | app.db.client | Error creating record in products: Object of type Decimal is not JSON serializable
+2025-07-10 02:01:27 | ERROR | ecommerce | Error: Object of type Decimal is not JSON serializable | Context: Creating product for user 8716c5ff-5642-4fed-aa1d-33498e3cfe4d
+Traceback (most recent call last):
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\app\services\product_service.py", line 39, in create_product
+    created_product = await db.create_record("products", product_dict)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\app\db\client.py", line 55, in create_record
+    response = self.client.table(table).insert(data).execute()
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\postgrest\_sync\request_builder.py", line 57, in execute
+    r = self.session.request(
+        self.http_method,
+    ...<3 lines>...
+        headers=self.headers,
+    )
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\httpx\_client.py", line 801, in request
+    request = self.build_request(
+        method=method,
+    ...<9 lines>...
+        extensions=extensions,
+    )
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\httpx\_client.py", line 358, in build_request
+    return Request(
+        method,
+    ...<8 lines>...
+        extensions=extensions,
+    )
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\httpx\_models.py", line 339, in __init__
+    headers, stream = encode_request(
+                      ~~~~~~~~~~~~~~^
+        content=content,
+        ^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+        ),
+        ^^
+    )
+    ^
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\httpx\_content.py", line 214, in encode_request
+    return encode_json(json)
+  File "C:\Users\troubleman96\Desktop\APIS\Ecommerce\backend\venv\Lib\site-packages\httpx\_content.py", line 177, in encode_json
+    body = json_dumps(json).encode("utf-8")
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\troubleman96\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 231, in dumps
+    return _default_encoder.encode(obj)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\troubleman96\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Users\troubleman96\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\troubleman96\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type Decimal is not JSON serializable
+2025-07-10 02:14:52 | INFO | ecommerce.auth | Login attempt for starkalyboy@gmail.com
+2025-07-10 02:14:52 | INFO | ecommerce | Attempting Supabase login for starkalyboy@gmail.com
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5.0 socket_options=None
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C695150>
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x00000171994E59A0> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5.0
+2025-07-10 02:14:52 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C695260>
+2025-07-10 02:14:52 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'POST']>
+2025-07-10 02:14:52 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:14:53 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'POST']>
+2025-07-10 02:14:53 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:14:53 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'POST']>
+2025-07-10 02:14:54 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:15:37 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'95cb86364d438a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Origin, Accept-Encoding'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'103'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:14:54 | INFO | httpx | HTTP Request: POST https://nluxtoziartsvilflbtf.supabase.co/auth/v1/token?grant_type=password "HTTP/1.1 200 OK"
+2025-07-10 02:14:54 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'POST']>
+2025-07-10 02:14:54 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:14:54 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:14:54 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:14:54 | INFO | ecommerce | Supabase login response for starkalyboy@gmail.com: user_id=8716c5ff-5642-4fed-aa1d-33498e3cfe4d
+2025-07-10 02:14:54 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:14:54 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:14:56 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:14:56 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5DF850>
+2025-07-10 02:14:56 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C605880> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:14:56 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5DF950>
+2025-07-10 02:14:56 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:14:56 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:14:56 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:14:56 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:14:56 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:14:57 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:15:40 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb864cd82c8a49-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'15'), (b'Set-Cookie', b'__cf_bm=0Fv6dFIV6Jrn.A0c7atqLp4YTdBU08cxxqng2BUSpW8-1752102940-1.0.1.1-FkQI688P7GqOdGmZkb9bTipfidDNBdF2ClVIbOo6iC0RHYHZsyuHGY.h2qcoPBdFtS5LOjB0A3zir915.Qvtiu.N0dMeoU_hLzJf6QIv3ys; path=/; expires=Wed, 09-Jul-25 23:45:40 GMT; domain=.supabase.co; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:14:57 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:14:57 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:14:57 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:14:57 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:14:57 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:14:57 | INFO | ecommerce.auth | Auth LOGIN: starkalyboy@gmail.com | Status: SUCCESS
+2025-07-10 02:21:16 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:21:16 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:21:16 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:21:17 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C609C70>
+2025-07-10 02:21:17 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C605880> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:21:17 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C609E50>
+2025-07-10 02:21:17 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:17 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:21:17 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:21:17 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:21:17 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:01 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb8f99fbf38a49-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'19'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:21:18 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:21:18 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:19 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:02 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb8fa1df548a49-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'1'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:21:19 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:21:19 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:21:19 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:21:19 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:21:19 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C6D8050>
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C605880> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:21:58 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C6D8BB0>
+2025-07-10 02:21:58 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:58 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:21:58 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:21:58 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:21:58 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:42 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb909cc9068a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'15'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:21:59 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:21:59 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:43 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb909fca778a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'2'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:00 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:00 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:44 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb90a7ee5e8a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'2'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:01 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:44 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb90aa4f738a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'4'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:01 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:01 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:02 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:02 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:02 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:02 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:02 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:46 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb90b4bc548a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'4'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:03 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:03 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:04 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:22:47 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'0-0/*'), (b'CF-Ray', b'95cb90ba0e908a42-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/profiles?id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&select=%2A'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'5'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:04 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/profiles?select=%2A&id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:04 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:04 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:04 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:04 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:26 | INFO | ecommerce | API Request: GET /api/v1/orders/ | User: starkalyboy@gmail.com
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C38C120>
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C605880> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:22:26 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719A473DD0>
+2025-07-10 02:22:26 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:26 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:26 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:26 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:26 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:23:10 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb9149fa2a8a49-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?limit=20&select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'9'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:27 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&limit=20 "HTTP/1.1 200 OK"
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:23:10 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb914efcad8a49-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'1'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:22:27 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:22:27 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:22:28 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:22:28 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:24:49 | INFO | ecommerce | API Request: GET /api/v1/orders/ | User: starkalyboy@gmail.com
+2025-07-10 02:24:49 | DEBUG | httpcore.connection | close.started
+2025-07-10 02:24:49 | DEBUG | httpcore.connection | close.complete
+2025-07-10 02:24:49 | DEBUG | httpcore.connection | connect_tcp.started host='nluxtoziartsvilflbtf.supabase.co' port=443 local_address=None timeout=5 socket_options=None
+2025-07-10 02:24:49 | DEBUG | httpcore.connection | connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C5EC590>
+2025-07-10 02:24:50 | DEBUG | httpcore.connection | start_tls.started ssl_context=<ssl.SSLContext object at 0x000001719C605880> server_hostname='nluxtoziartsvilflbtf.supabase.co' timeout=5
+2025-07-10 02:24:50 | DEBUG | httpcore.connection | start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001719C1619C0>
+2025-07-10 02:24:50 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:24:50 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:24:50 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:24:51 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:24:51 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:24:52 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:25:34 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb94cd5b178a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?limit=10&select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'16'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:24:52 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&limit=10 "HTTP/1.1 200 OK"
+2025-07-10 02:24:53 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:24:53 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:24:53 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:24:54 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:24:54 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:24:55 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:24:56 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:24:56 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:24:56 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:24:57 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:25:39 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb94eb387b8a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'1'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:24:57 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:24:57 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:24:57 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:24:58 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:24:58 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:25:01 | INFO | ecommerce | API Request: GET /api/v1/orders/ | User: starkalyboy@gmail.com
+2025-07-10 02:25:02 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:02 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:25:02 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:25:02 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:25:02 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:03 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:25:45 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb9515caba8a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?limit=10&select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'2'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:25:03 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&limit=10 "HTTP/1.1 200 OK"
+2025-07-10 02:25:03 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:25:04 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:25:05 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:25:06 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:25:07 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:07 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:25:08 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:25:09 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:25:09 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:10 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:25:52 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb953739708a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'1'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:25:10 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:25:12 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:25:12 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:25:13 | INFO | ecommerce | API Request: GET /api/v1/orders/ | User: starkalyboy@gmail.com
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:25:13 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:14 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:25:57 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb955e39f88a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?limit=10&select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'2'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:25:14 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d&limit=10 "HTTP/1.1 200 OK"
+2025-07-10 02:25:14 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:25:15 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:25:15 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:25:16 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:25:16 | DEBUG | httpcore.http11 | send_request_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | send_request_headers.complete
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | send_request_body.started request=<Request [b'GET']>
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | send_request_body.complete
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | receive_response_headers.started request=<Request [b'GET']>
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Wed, 09 Jul 2025 23:26:00 GMT'), (b'Content-Type', b'application/json; charset=utf-8'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'Content-Range', b'*/*'), (b'CF-Ray', b'95cb95727b468a40-NBO'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Content-Encoding', b'gzip'), (b'Content-Location', b'/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'Vary', b'Accept-Encoding'), (b'content-profile', b'public'), (b'sb-gateway-version', b'1'), (b'sb-project-ref', b'nluxtoziartsvilflbtf'), (b'X-Content-Type-Options', b'nosniff'), (b'x-envoy-attempt-count', b'1'), (b'x-envoy-upstream-service-time', b'1'), (b'Server', b'cloudflare'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-07-10 02:25:17 | INFO | httpx | HTTP Request: GET https://nluxtoziartsvilflbtf.supabase.co/rest/v1/orders?select=%2A&user_id=eq.8716c5ff-5642-4fed-aa1d-33498e3cfe4d "HTTP/1.1 200 OK"
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | receive_response_body.started request=<Request [b'GET']>
+2025-07-10 02:25:17 | DEBUG | httpcore.http11 | receive_response_body.complete
+2025-07-10 02:25:18 | DEBUG | httpcore.http11 | response_closed.started
+2025-07-10 02:25:18 | DEBUG | httpcore.http11 | response_closed.complete
+2025-07-10 02:25:21 | INFO | ecommerce | 🛑 FastAPI E-Commerce application shutting down...
+2025-07-10 02:29:21 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:29:21 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:29:22 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:29:22 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:29:24 | INFO | app.db.client | Supabase clients initialized successfully
+2025-07-10 02:30:06 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:30:06 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:30:08 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-10 02:30:08 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\troubleman96\\Desktop\\APIS\\Ecommerce\\backend\\venv\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-10 02:30:09 | INFO | app.db.client | Supabase clients initialized successfully

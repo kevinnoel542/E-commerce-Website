@@ -1,3 +1,5 @@
 .env
 .history/
 __pycache__
+STRIPE_INTEGRATION_GUIDE.md
+ADMIN_GUIDE.md

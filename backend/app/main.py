@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.v1.routes import auth, products, orders, payments
+from app.api.v1.routes import auth, products, orders, payments, stripe_payments
 from app.core.logging import logger
 
 app = FastAPI(
@@ -41,4 +41,5 @@ def health_check():
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(products.router, prefix="/api/v1/products", tags=["Products"])
 app.include_router(orders.router, prefix="/api/v1/orders", tags=["Orders"])
-app.include_router(payments.router, prefix="/api/v1/payments", tags=["Payments"])
+app.include_router(payments.router, prefix="/api/v1/payments", tags=["Payments (Legacy)"])
+app.include_router(stripe_payments.router, prefix="/api/v1/stripe", tags=["Stripe Payments"])
