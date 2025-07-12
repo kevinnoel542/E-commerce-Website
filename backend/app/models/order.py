@@ -36,8 +36,16 @@ class OrderItemBase(BaseModel):
             raise ValueError('Unit price must be greater than 0')
         return v
 
-class OrderItemCreate(OrderItemBase):
-    pass
+class OrderItemCreate(BaseModel):
+    """Simplified model for creating order items - price comes from product database"""
+    product_id: str
+    quantity: int
+
+    @validator('quantity')
+    def validate_quantity(cls, v):
+        if v <= 0:
+            raise ValueError('Quantity must be greater than 0')
+        return v
 
 class OrderItem(OrderItemBase):
     id: str

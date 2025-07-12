@@ -92,6 +92,22 @@ class DatabaseClient:
             logger.error(f"Error creating record in {table}: {str(e)}")
             raise
 
+    async def create_record_admin(self, table: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Create a new record using admin client (bypasses RLS)"""
+        try:
+            # Convert data to be JSON serializable
+            logger.info(f"Creating record in {table} with admin client")
+            serializable_data = convert_for_json(data)
+
+            response = self.admin_client.table(table).insert(serializable_data).execute()
+            if response.data:
+                logger.info(f"Created record in {table} (admin): {response.data[0].get('id', 'unknown')}")
+                return response.data[0]
+            return None
+        except Exception as e:
+            logger.error(f"Error creating record in {table} (admin): {str(e)}")
+            raise
+
     async def get_record(self, table: str, record_id: str, id_column: str = "id") -> Optional[Dict[str, Any]]:
         """Get a single record by ID"""
         try:
