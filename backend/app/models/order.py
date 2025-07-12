@@ -82,6 +82,18 @@ class OrderUpdate(BaseModel):
     tracking_number: Optional[str] = None
     notes: Optional[str] = None
 
+class OrderPatch(BaseModel):
+    """Model for partial order updates by customers - only allows safe fields"""
+    notes: Optional[str] = None
+    # Note: status, payment_status, tracking_number excluded for customer safety
+
+class OrderAdminPatch(BaseModel):
+    """Model for partial order updates by admins - allows more fields"""
+    status: Optional[OrderStatus] = None
+    payment_status: Optional[PaymentStatus] = None
+    tracking_number: Optional[str] = None
+    notes: Optional[str] = None
+
 class Order(BaseModel):
     id: str
     user_id: str

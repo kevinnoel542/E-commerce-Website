@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from typing import Optional
 from app.models.order import (
-    Order, OrderCreate, OrderUpdate, OrderListResponse, 
+    Order, OrderCreate, OrderUpdate, OrderPatch, OrderAdminPatch, OrderListResponse,
     Cart, CartSummary, OrderStatus, PaymentStatus
 )
 from app.services.order_service import order_service
@@ -65,17 +65,16 @@ async def get_order(
     
     return order
 
-@router.put("/{order_id}", response_model=Order)
+@router.patch("/{order_id}", response_model=Order)
 async def update_order(
     order_id: str,
-    order_data: OrderUpdate,
+    order_data: OrderPatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update an order (limited fields for customers)"""
-    log_request("PUT", f"/api/v1/orders/{order_id}", current_user["email"])
-    
-    # For regular users, only allow updating notes
-    # Admin users could update status, payment_status, etc.
+    """Partially update an order (customers can only update notes)"""
+    log_request("PATCH", f"/api/v1/orders/{order_id}", current_user["email"])
+
+    # Convert to OrderUpdate for service layer compatibility
     allowed_updates = OrderUpdate(notes=order_data.notes)
     
     updated_order = await order_service.update_order(
@@ -270,19 +269,27 @@ async def get_all_orders_admin(
             detail="Failed to retrieve orders"
         )
 
-@router.put("/admin/{order_id}", response_model=Order)
+@router.patch("/admin/{order_id}", response_model=Order)
 async def update_order_admin(
     order_id: str,
-    order_data: OrderUpdate,
+    order_data: OrderAdminPatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update any order (admin only)"""
-    log_request("PUT", f"/api/v1/orders/admin/{order_id}", current_user["email"])
-    
+    """Partially update any order (admin only) - allows more fields"""
+    log_request("PATCH", f"/api/v1/orders/admin/{order_id}", current_user["email"])
+
     # In a real app, check if user has admin privileges
     # For now, any authenticated user can access this
-    
-    updated_order = await order_service.update_order(order_id, order_data)
+
+    # Convert to OrderUpdate for service layer compatibility
+    admin_updates = OrderUpdate(
+        status=order_data.status,
+        payment_status=order_data.payment_status,
+        tracking_number=order_data.tracking_number,
+        notes=order_data.notes
+    )
+
+    updated_order = await order_service.update_order(order_id, admin_updates)
     
     if not updated_order:
         raise HTTPException(

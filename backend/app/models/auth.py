@@ -100,7 +100,19 @@ class UserProfile(BaseModel):
 class UpdateProfileRequest(BaseModel):
     full_name: Optional[str] = None
     phone: Optional[str] = None
-    
+
+    @validator('full_name')
+    def validate_full_name(cls, v):
+        if v and len(v.strip()) < 2:
+            raise ValueError('Full name must be at least 2 characters long')
+        return v.strip() if v else v
+
+class ProfilePatch(BaseModel):
+    """Model for partial profile updates - only allows safe user-editable fields"""
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    # Note: email, role, is_active, email_verified excluded for security
+
     @validator('full_name')
     def validate_full_name(cls, v):
         if v and len(v.strip()) < 2:

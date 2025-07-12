@@ -1,7 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.encoders import jsonable_encoder
+from pathlib import Path
+import json
+from decimal import Decimal
 from app.api.v1.routes import auth, products, orders, payments, stripe_payments
 from app.core.logging import logger
+
+# Custom JSON encoder for Decimal
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return super().default(obj)
 
 app = FastAPI(
     title="E-Commerce API",
@@ -43,3 +55,8 @@ app.include_router(products.router, prefix="/api/v1/products", tags=["Products"]
 app.include_router(orders.router, prefix="/api/v1/orders", tags=["Orders"])
 app.include_router(payments.router, prefix="/api/v1/payments", tags=["Payments (Legacy)"])
 app.include_router(stripe_payments.router, prefix="/api/v1/stripe", tags=["Stripe Payments"])
+
+# Mount static files for image serving
+uploads_dir = Path("uploads")
+uploads_dir.mkdir(exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
