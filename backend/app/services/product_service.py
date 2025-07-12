@@ -13,34 +13,84 @@ from fastapi import HTTPException, status
 class ProductService:
     """Service for managing products and categories"""
     
-    async def create_product(self, product_data: ProductCreate, user_id: str) -> Product:
-        """Create a new product"""
+    def generate_sku(self, product_name: str, category_id: str = None) -> str:
+        """Generate automatic SKU based on product name and category"""
         try:
-            # Generate unique SKU if not provided
-            if not product_data.sku:
-                product_data.sku = f"PRD-{uuid.uuid4().hex[:8].upper()}"
-            
-            # Check if SKU already exists
-            existing_product = await db.get_records("products", {"sku": product_data.sku})
-            if existing_product:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Product with this SKU already exists"
-                )
-            
+            # Clean product name for SKU
+            name_part = ''.join(c.upper() for c in product_name if c.isalnum())[:6]
+
+            # Add category prefix if available
+            category_part = ""
+            if category_id:
+                # You could fetch category name and use first 3 letters
+                category_part = "CAT"  # Simplified for now
+
+            # Generate unique identifier
+            unique_part = uuid.uuid4().hex[:6].upper()
+
+            # Combine parts
+            if category_part:
+                sku = f"{category_part}-{name_part}-{unique_part}"
+            else:
+                sku = f"PRD-{name_part}-{unique_part}"
+
+            return sku
+        except Exception:
+            # Fallback to simple UUID-based SKU
+            return f"PRD-{uuid.uuid4().hex[:8].upper()}"
+
+    async def create_product(self, product_data: ProductCreate, user_id: str) -> Product:
+        """Create a new product with auto-generated SKU"""
+        try:
+            # Clean up string values from Swagger UI defaults
+            if product_data.category_id == "string":
+                product_data.category_id = None
+            if product_data.brand == "string":
+                product_data.brand = None
+
+            # Generate unique SKU if not provided or if it's the default "string"
+            if not product_data.sku or product_data.sku == "string":
+                product_data.sku = self.generate_sku(product_data.name, product_data.category_id)
+
+            # Ensure SKU is unique
+            max_attempts = 5
+            for attempt in range(max_attempts):
+                existing_product = await db.get_records("products", {"sku": product_data.sku})
+                if not existing_product:
+                    break
+
+                # Generate new SKU if collision
+                product_data.sku = self.generate_sku(product_data.name, product_data.category_id)
+
+                if attempt == max_attempts - 1:
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Failed to generate unique SKU"
+                    )
+
+            # Convert to dict and ensure all values are JSON serializable
             product_dict = product_data.dict()
+
+            # Ensure price is float
+            if 'price' in product_dict:
+                product_dict['price'] = float(product_dict['price'])
+
+            # Add additional fields
             product_dict.update({
                 "id": str(uuid.uuid4()),
-                "created_by": user_id,
                 "created_at": datetime.utcnow().isoformat(),
                 "is_active": True
+                # Note: created_by column doesn't exist in current database schema
             })
-            
+
+            # Log the data types for debugging
+            product_logger.info(f"Product data types: {[(k, type(v).__name__) for k, v in product_dict.items()]}")
+
             created_product = await db.create_record("products", product_dict)
-            product_logger.info(f"Product created: {created_product['id']} by user {user_id}")
-            
+            product_logger.info(f"Product created: {created_product['id']} (SKU: {product_data.sku}) by user {user_id}")
+
             return Product(**created_product)
-        
+
         except HTTPException:
             raise
         except Exception as e:
@@ -88,7 +138,7 @@ class ProductService:
             
             update_dict = product_data.dict(exclude_unset=True)
             update_dict["updated_at"] = datetime.utcnow().isoformat()
-            update_dict["updated_by"] = user_id
+            # Note: updated_by column doesn't exist in current database schema
             
             updated_product = await db.update_record("products", product_id, update_dict)
             product_logger.info(f"Product updated: {product_id} by user {user_id}")
@@ -118,8 +168,8 @@ class ProductService:
             # Soft delete by setting is_active to False
             await db.update_record("products", product_id, {
                 "is_active": False,
-                "updated_at": datetime.utcnow().isoformat(),
-                "updated_by": user_id
+                "updated_at": datetime.utcnow().isoformat()
+                # Note: updated_by column doesn't exist in current database schema
             })
             
             product_logger.info(f"Product deleted: {product_id} by user {user_id}")

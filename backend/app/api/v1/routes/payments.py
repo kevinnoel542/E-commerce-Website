@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from typing import Dict, Any
-from app.services.payment_service import payment_service
+from app.services.stripe_payment_service import stripe_payment_service
 from app.core.security import get_current_user
 from app.core.logging import log_request, payment_logger, log_payment_event
+from app.services.payment_service import payment_service
 
 router = APIRouter()
 

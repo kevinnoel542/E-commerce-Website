@@ -1,9 +1,35 @@
 from typing import Optional, Dict, Any, List
 import os
+import json
+from decimal import Decimal
+from datetime import datetime
 
 # Initialize variables
 supabase = None
 admin_supabase = None
+
+def convert_for_json(data):
+    """Convert data to be JSON serializable"""
+    if isinstance(data, dict):
+        return {key: convert_for_json(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_for_json(item) for item in data]
+    elif isinstance(data, Decimal):
+        return float(data)
+    elif isinstance(data, datetime):
+        return data.isoformat()
+    elif hasattr(data, '__dict__'):
+        # Handle any object with attributes
+        return convert_for_json(data.__dict__)
+    else:
+        # Try to convert to basic types
+        try:
+            import json
+            json.dumps(data)  # Test if it's already serializable
+            return data
+        except TypeError:
+            # If not serializable, convert to string as fallback
+            return str(data)
 
 # Try to import configuration
 try:
@@ -52,13 +78,34 @@ class DatabaseClient:
     async def create_record(self, table: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Create a new record in the specified table"""
         try:
-            response = self.client.table(table).insert(data).execute()
+            # Convert data to be JSON serializable
+            logger.info(f"Original data types: {[(k, type(v).__name__) for k, v in data.items()]}")
+            serializable_data = convert_for_json(data)
+            logger.info(f"Converted data types: {[(k, type(v).__name__) for k, v in serializable_data.items()]}")
+
+            response = self.client.table(table).insert(serializable_data).execute()
             if response.data:
                 logger.info(f"Created record in {table}: {response.data[0].get('id', 'unknown')}")
                 return response.data[0]
             return None
         except Exception as e:
             logger.error(f"Error creating record in {table}: {str(e)}")
+            raise
+
+    async def create_record_admin(self, table: str, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Create a new record using admin client (bypasses RLS)"""
+        try:
+            # Convert data to be JSON serializable
+            logger.info(f"Creating record in {table} with admin client")
+            serializable_data = convert_for_json(data)
+
+            response = self.admin_client.table(table).insert(serializable_data).execute()
+            if response.data:
+                logger.info(f"Created record in {table} (admin): {response.data[0].get('id', 'unknown')}")
+                return response.data[0]
+            return None
+        except Exception as e:
+            logger.error(f"Error creating record in {table} (admin): {str(e)}")
             raise
 
     async def get_record(self, table: str, record_id: str, id_column: str = "id") -> Optional[Dict[str, Any]]:
@@ -98,7 +145,9 @@ class DatabaseClient:
                            id_column: str = "id") -> Optional[Dict[str, Any]]:
         """Update a record by ID"""
         try:
-            response = self.client.table(table).update(data).eq(id_column, record_id).execute()
+            # Convert data to be JSON serializable
+            serializable_data = convert_for_json(data)
+            response = self.client.table(table).update(serializable_data).eq(id_column, record_id).execute()
             if response.data:
                 logger.info(f"Updated record in {table}: {record_id}")
                 return response.data[0]

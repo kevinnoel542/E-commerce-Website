@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from app.models.auth import (
     LoginData, RegisterData, AdminRegisterData, TokenResponse, RefreshTokenRequest,
     PasswordResetRequest, ChangePasswordRequest, UserProfile,
-    UpdateProfileRequest, AuthResponse, UserRole
+    UpdateProfileRequest, ProfilePatch, AuthResponse, UserRole
 )
 from app.core.security import (
     create_token_pair, verify_token, get_current_user,
@@ -420,30 +420,62 @@ async def logout(current_user: dict = Depends(get_current_user)):
 async def get_profile(current_user: dict = Depends(get_current_user)):
     """Get current user profile"""
     try:
-        profile_data = await db.get_record("profiles", current_user["user_id"])
+        logger.info(f"Getting profile for user: {current_user['user_id']}")
+
+        # Try to get profile from database
+        try:
+            profile_data = await db.get_record("profiles", current_user["user_id"])
+        except Exception as db_error:
+            logger.error(f"Database error getting profile: {str(db_error)}")
+            # Try using supabase client directly
+            from app.db.client import supabase
+            response = supabase.table("profiles").select("*").eq("id", current_user["user_id"]).execute()
+            profile_data = response.data[0] if response.data else None
+
         if not profile_data:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found"
-            )
-        
+            # Create a basic profile if it doesn't exist
+            logger.warning(f"Profile not found for user {current_user['user_id']}, creating basic profile")
+            basic_profile = {
+                "id": current_user["user_id"],
+                "email": current_user["email"],
+                "full_name": "",
+                "phone": None,
+                "role": current_user.get("role", "user"),
+                "created_at": datetime.utcnow().isoformat(),
+                "is_active": True,
+                "email_verified": False
+            }
+
+            try:
+                # Try to create the profile
+                from app.db.client import admin_supabase
+                admin_response = admin_supabase.table("profiles").insert(basic_profile).execute()
+                if admin_response.data:
+                    profile_data = admin_response.data[0]
+                else:
+                    profile_data = basic_profile
+            except Exception as create_error:
+                logger.error(f"Failed to create profile: {str(create_error)}")
+                # Return basic profile data even if creation fails
+                profile_data = basic_profile
+
         return UserProfile(**profile_data)
-    
+
     except HTTPException:
         raise
     except Exception as e:
-        log_error(e, f"Getting profile for {current_user.get('email', 'unknown')}")
+        logger.error(f"Error getting profile for user {current_user['user_id']}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve profile"
+            detail="Failed to get profile"
         )
 
-@router.put("/profile", response_model=UserProfile)
+@router.patch("/profile", response_model=UserProfile)
 async def update_profile(
-    profile_data: UpdateProfileRequest,
+    profile_data: ProfilePatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update user profile"""
+    """Partially update user profile - only safe fields allowed"""
     try:
         update_dict = profile_data.dict(exclude_unset=True)
         update_dict["updated_at"] = datetime.utcnow().isoformat()
