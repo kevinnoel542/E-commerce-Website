@@ -1,0 +1,58 @@
+# Core FastAPI dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Authentication and Security
+PyJWT==2.8.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+cryptography==41.0.7
+
+# HTTP requests - using compatible versions
+requests==2.31.0
+httpx==0.24.1
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Data validation
+pydantic==2.5.0
+email-validator==2.1.0
+
+# Date handling
+python-dateutil==2.8.2
+
+# Database - using older compatible versions for Python 3.13
+supabase==2.0.2
+postgrest==0.13.2
+gotrue==2.3.0
+storage3==0.7.0
+realtime==1.0.4
+
+# Development dependencies (optional - install separately if needed)
+# pytest==7.4.3
+# pytest-asyncio==0.21.1
+# pytest-cov==4.1.0
+# black==23.11.0
+# flake8==6.1.0
+# isort==5.12.0
+
+# Optional: For file uploads and image processing
+# Pillow==10.1.0
+# python-magic==0.4.27
+
+# Optional: For email sending
+# fastapi-mail==1.4.1
+
+# Optional: For caching
+# redis==5.0.1
+# fastapi-cache2==0.2.1
+
+# Optional: For background tasks
+# celery==5.3.4
+# flower==2.0.1
+
+# Optional: For API documentation
+# mkdocs==1.5.3
+# mkdocs-material==9.4.8
+
