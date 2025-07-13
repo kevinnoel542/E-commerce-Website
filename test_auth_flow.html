@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication Flow Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .test-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+      }
+      .info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      pre {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 3px;
+        overflow-x: auto;
+      }
+      input {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        width: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔐 Authentication Flow Test</h1>
+    <p>This page tests the Laravel → FastAPI authentication integration.</p>
+
+    <div class="test-section info">
+      <h3>Test Credentials</h3>
+      <p><strong>Email:</strong> itslugenge96@gmail.com</p>
+      <p><strong>Password:</strong> user123</p>
+    </div>
+
+    <div class="test-section">
+      <h3>1. Test FastAPI Direct Login</h3>
+      <button onclick="testFastAPILogin()">Test FastAPI Login</button>
+      <div id="fastapi-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>2. Test Laravel AuthController</h3>
+      <form id="laravel-login-form">
+        <input
+          type="email"
+          id="email"
+          placeholder="Email"
+          value="itslugenge96@gmail.com"
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          value="user123"
+        />
+        <button type="submit">Test Laravel Login</button>
+      </form>
+      <div id="laravel-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>3. Test Dashboard Access</h3>
+      <button onclick="testDashboardAccess()">Test Dashboard Access</button>
+      <div id="dashboard-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>4. Test Authentication Status</h3>
+      <button onclick="checkAuthStatus()">Check Auth Status</button>
+      <div id="auth-status-result"></div>
+    </div>
+
+    <div class="test-section">
+      <h3>5. Test Session Storage (JWT + Role)</h3>
+      <button onclick="debugSessionStorage()">Debug Session Storage</button>
+      <div id="session-debug-result"></div>
+    </div>
+
+    <script>
+      // Test FastAPI direct login
+      async function testFastAPILogin() {
+        const resultDiv = document.getElementById("fastapi-result");
+        resultDiv.innerHTML = "<p>Testing FastAPI login...</p>";
+
+        try {
+          const response = await fetch(
+            "http://localhost:8000/api/v1/auth/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: "itslugenge96@gmail.com",
+                password: "user123",
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            resultDiv.className = "test-section success";
+            resultDiv.innerHTML = `
+                        <h4>✅ FastAPI Login Successful</h4>
+                        <p><strong>User:</strong> ${data.user.full_name} (${
+              data.user.email
+            })</p>
+                        <p><strong>Role:</strong> ${data.user.role}</p>
+                        <p><strong>Token Type:</strong> ${
+                          data.tokens.token_type
+                        }</p>
+                        <p><strong>Expires In:</strong> ${
+                          data.tokens.expires_in
+                        } seconds</p>
+                        <details>
+                            <summary>Full Response</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    `;
+          } else {
+            resultDiv.className = "test-section error";
+            resultDiv.innerHTML = `<h4>❌ FastAPI Login Failed</h4><pre>${JSON.stringify(
+              data,
+              null,
+              2
+            )}</pre>`;
+          }
+        } catch (error) {
+          resultDiv.className = "test-section error";
+          resultDiv.innerHTML = `<h4>❌ Error</h4><p>${error.message}</p>`;
+        }
+      }
+
+      // Test Laravel AuthController
+      document
+        .getElementById("laravel-login-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const resultDiv = document.getElementById("laravel-result");
+          resultDiv.innerHTML = "<p>Testing Laravel AuthController...</p>";
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          try {
+            // First get CSRF token
+            const tokenResponse = await fetch("http://localhost:3000/login");
+            const tokenHtml = await tokenResponse.text();
+            const csrfMatch = tokenHtml.match(/name="_token" value="([^"]+)"/);
+            const csrfToken = csrfMatch ? csrfMatch[1] : "";
+
+            const formData = new FormData();
+            formData.append("email", email);
+            formData.append("password", password);
+            formData.append("_token", csrfToken);
+
+            const response = await fetch("http://localhost:3000/login", {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                Accept: "application/json",
+              },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              resultDiv.className = "test-section success";
+              resultDiv.innerHTML = `
+                        <h4>✅ Laravel Login Successful</h4>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>User:</strong> ${data.user.full_name} (${
+                data.user.email
+              })</p>
+                        <p><strong>Role:</strong> ${data.user.role}</p>
+                        <p><strong>Redirect:</strong> ${data.redirect}</p>
+                        <details>
+                            <summary>Full Response</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    `;
+            } else {
+              resultDiv.className = "test-section error";
+              resultDiv.innerHTML = `<h4>❌ Laravel Login Failed</h4><pre>${JSON.stringify(
+                data,
+                null,
+                2
+              )}</pre>`;
+            }
+          } catch (error) {
+            resultDiv.className = "test-section error";
+            resultDiv.innerHTML = `<h4>❌ Error</h4><p>${error.message}</p>`;
+          }
+        });
+
+      // Test dashboard access
+      async function testDashboardAccess() {
+        const resultDiv = document.getElementById("dashboard-result");
+        resultDiv.innerHTML = "<p>Testing dashboard access...</p>";
+
+        try {
+          const response = await fetch("http://localhost:3000/dashboard", {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const html = await response.text();
+            if (html.includes("E-Commerce Dashboard")) {
+              resultDiv.className = "test-section success";
+              resultDiv.innerHTML =
+                "<h4>✅ Dashboard Access Successful</h4><p>Dashboard loaded successfully</p>";
+            } else {
+              resultDiv.className = "test-section error";
+              resultDiv.innerHTML =
+                "<h4>❌ Dashboard Access Failed</h4><p>Redirected to login page</p>";
+            }
+          } else {
+            resultDiv.className = "test-section error";
+            resultDiv.innerHTML = `<h4>❌ Dashboard Access Failed</h4><p>Status: ${response.status}</p>`;
+          }
+        } catch (error) {
+          resultDiv.className = "test-section error";
+          resultDiv.innerHTML = `<h4>❌ Error</h4><p>${error.message}</p>`;
+        }
+      }
+
+      // Check authentication status
+      async function checkAuthStatus() {
+        const resultDiv = document.getElementById("auth-status-result");
+        resultDiv.innerHTML = "<p>Checking authentication status...</p>";
+
+        try {
+          const response = await fetch("http://localhost:3000/api/auth/check", {
+            credentials: "include",
+          });
+
+          const data = await response.json();
+
+          if (data.authenticated) {
+            resultDiv.className = "test-section success";
+            resultDiv.innerHTML = `
+                        <h4>✅ User Authenticated</h4>
+                        <p><strong>User:</strong> ${data.user.full_name} (${
+              data.user.email
+            })</p>
+                        <p><strong>Role:</strong> ${data.user.role}</p>
+                        <details>
+                            <summary>Full Response</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    `;
+          } else {
+            resultDiv.className = "test-section error";
+            resultDiv.innerHTML = "<h4>❌ User Not Authenticated</h4>";
+          }
+        } catch (error) {
+          resultDiv.className = "test-section error";
+          resultDiv.innerHTML = `<h4>❌ Error</h4><p>${error.message}</p>`;
+        }
+      }
+
+      // Debug session storage
+      async function debugSessionStorage() {
+        const resultDiv = document.getElementById("session-debug-result");
+        resultDiv.innerHTML = "<p>Debugging session storage...</p>";
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/auth/debug-session",
+            {
+              credentials: "include",
+            }
+          );
+
+          const data = await response.json();
+
+          resultDiv.className = "test-section info";
+          resultDiv.innerHTML = `
+                  <h4>🔍 Session Storage Debug</h4>
+                  <div style="margin: 10px 0;">
+                      <h5>📦 Session Data:</h5>
+                      <p><strong>Access Token:</strong> ${
+                        data.session_data.access_token
+                      }</p>
+                      <p><strong>Refresh Token:</strong> ${
+                        data.session_data.refresh_token
+                      }</p>
+                      <p><strong>User Role:</strong> ${
+                        data.session_data.user_role
+                      }</p>
+                      <p><strong>Session ID:</strong> ${
+                        data.session_data.session_id
+                      }</p>
+                      <p><strong>All Session Keys:</strong> ${data.session_data.all_session_keys.join(
+                        ", "
+                      )}</p>
+                  </div>
+                  <div style="margin: 10px 0;">
+                      <h5>🔧 Storage Methods Comparison:</h5>
+                      <p><strong>Session::put() method:</strong> Token exists: ${
+                        data.session_methods.facade_get.access_token_exists
+                      }, Role: ${data.session_methods.facade_get.user_role}</p>
+                      <p><strong>session() helper method:</strong> Token exists: ${
+                        data.session_methods.helper_get.access_token_exists
+                      }, Role: ${data.session_methods.helper_get.user_role}</p>
+                  </div>
+                  <details>
+                      <summary>Full Session Debug Data</summary>
+                      <pre>${JSON.stringify(data, null, 2)}</pre>
+                  </details>
+              `;
+        } catch (error) {
+          resultDiv.className = "test-section error";
+          resultDiv.innerHTML = `<h4>❌ Error</h4><p>${error.message}</p>`;
+        }
+      }
+    </script>
+  </body>
+</html>

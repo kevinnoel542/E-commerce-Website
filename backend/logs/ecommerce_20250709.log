@@ -1,0 +1,24 @@
+2025-07-09 11:49:58 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:49:58 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:49:58 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:49:58 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:49:59 | INFO | ecommerce | Supabase clients initialized successfully
+2025-07-09 11:50:03 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
+2025-07-09 11:51:00 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:51:00 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:51:00 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:51:00 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:51:01 | INFO | ecommerce | Supabase clients initialized successfully
+2025-07-09 11:51:01 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
+2025-07-09 11:54:32 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:54:32 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:54:32 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:54:32 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:54:33 | INFO | ecommerce | Supabase clients initialized successfully
+2025-07-09 11:54:33 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
+2025-07-09 11:56:33 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:56:33 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:56:33 | DEBUG | httpx | load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-07-09 11:56:33 | DEBUG | httpx | load_verify_locations cafile='C:\\Users\\HACKER JOE\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\certifi\\cacert.pem'
+2025-07-09 11:56:34 | INFO | ecommerce | Supabase clients initialized successfully
+2025-07-09 11:56:34 | INFO | ecommerce | 🚀 FastAPI E-Commerce application starting up...
