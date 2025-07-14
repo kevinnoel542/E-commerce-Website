@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     email TEXT UNIQUE NOT NULL,
     full_name TEXT,
     phone TEXT,
+    role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE,
     is_active BOOLEAN DEFAULT TRUE,
@@ -19,7 +20,13 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- Profiles policies
+-- Profiles policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+DROP POLICY IF EXISTS "Service role can insert profiles" ON profiles;
+DROP POLICY IF EXISTS "Service role can update profiles" ON profiles;
+
 CREATE POLICY "Users can view own profile" ON profiles
     FOR SELECT USING (auth.uid() = id);
 
@@ -51,7 +58,10 @@ CREATE TABLE IF NOT EXISTS categories (
 -- Enable Row Level Security for categories
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 
--- Categories policies (public read, authenticated write)
+-- Categories policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Anyone can view active categories" ON categories;
+DROP POLICY IF EXISTS "Authenticated users can manage categories" ON categories;
+
 CREATE POLICY "Anyone can view active categories" ON categories
     FOR SELECT USING (is_active = true);
 
@@ -78,7 +88,10 @@ CREATE TABLE IF NOT EXISTS products (
 -- Enable Row Level Security for products
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
--- Products policies (public read, authenticated write)
+-- Products policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Anyone can view active products" ON products;
+DROP POLICY IF EXISTS "Authenticated users can manage products" ON products;
+
 CREATE POLICY "Anyone can view active products" ON products
     FOR SELECT USING (is_active = true);
 
@@ -108,7 +121,11 @@ CREATE TABLE IF NOT EXISTS orders (
 -- Enable Row Level Security for orders
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 
--- Orders policies (users can only see their own orders)
+-- Orders policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Users can view own orders" ON orders;
+DROP POLICY IF EXISTS "Users can create own orders" ON orders;
+DROP POLICY IF EXISTS "Users can update own orders" ON orders;
+
 CREATE POLICY "Users can view own orders" ON orders
     FOR SELECT USING (auth.uid() = user_id);
 
@@ -133,12 +150,15 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Enable Row Level Security for order_items
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 
--- Order items policies (inherit from orders)
+-- Order items policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Users can view own order items" ON order_items;
+DROP POLICY IF EXISTS "Users can create order items for own orders" ON order_items;
+
 CREATE POLICY "Users can view own order items" ON order_items
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM orders 
-            WHERE orders.id = order_items.order_id 
+            SELECT 1 FROM orders
+            WHERE orders.id = order_items.order_id
             AND orders.user_id = auth.uid()
         )
     );
@@ -146,41 +166,70 @@ CREATE POLICY "Users can view own order items" ON order_items
 CREATE POLICY "Users can create order items for own orders" ON order_items
     FOR INSERT WITH CHECK (
         EXISTS (
-            SELECT 1 FROM orders 
-            WHERE orders.id = order_items.order_id 
+            SELECT 1 FROM orders
+            WHERE orders.id = order_items.order_id
             AND orders.user_id = auth.uid()
         )
     );
 
--- Payments table
+-- Payments table (Stripe-optimized)
 CREATE TABLE IF NOT EXISTS payments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tx_ref TEXT UNIQUE NOT NULL,
     order_id UUID REFERENCES orders(id) NOT NULL,
+
+    -- Stripe identifiers
+    stripe_payment_intent_id TEXT UNIQUE,
+    stripe_checkout_session_id TEXT UNIQUE,
+    stripe_customer_id TEXT,
+    stripe_charge_id TEXT,
+
+    -- Payment details
     amount DECIMAL(10,2) NOT NULL CHECK (amount > 0),
-    currency TEXT NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'usd',
     customer_email TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'successful', 'failed', 'cancelled', 'refunded')),
-    payment_link TEXT,
-    flutterwave_id TEXT,
-    payment_type TEXT,
-    refund_amount DECIMAL(10,2) DEFAULT 0,
+
+    -- Status tracking
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'succeeded', 'failed', 'canceled', 'refunded', 'partially_refunded')),
+    payment_method_type TEXT, -- card, bank_transfer, etc.
+
+    -- URLs and links
+    checkout_url TEXT,
+    success_url TEXT,
+    cancel_url TEXT,
+
+    -- Financial tracking
+    amount_received DECIMAL(10,2) DEFAULT 0,
+    amount_refunded DECIMAL(10,2) DEFAULT 0,
+    application_fee DECIMAL(10,2) DEFAULT 0,
+
+    -- Timestamps
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    verified_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    succeeded_at TIMESTAMP WITH TIME ZONE,
+    canceled_at TIMESTAMP WITH TIME ZONE,
+
+    -- Webhook and metadata
     webhook_received_at TIMESTAMP WITH TIME ZONE,
-    refund_initiated_at TIMESTAMP WITH TIME ZONE,
-    webhook_data JSONB
+    stripe_metadata JSONB,
+    webhook_data JSONB,
+
+    -- Additional Stripe fields
+    receipt_url TEXT,
+    invoice_id TEXT,
+    description TEXT
 );
 
 -- Enable Row Level Security for payments
 ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
 
--- Payments policies (users can only see payments for their orders)
+-- Payments policies (drop existing ones first to avoid conflicts)
+DROP POLICY IF EXISTS "Users can view payments for own orders" ON payments;
+
 CREATE POLICY "Users can view payments for own orders" ON payments
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM orders 
-            WHERE orders.id = payments.order_id 
+            SELECT 1 FROM orders
+            WHERE orders.id = payments.order_id
             AND orders.user_id = auth.uid()
         )
     );
@@ -202,11 +251,12 @@ CREATE INDEX IF NOT EXISTS idx_payments_status ON payments(status);
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, email, full_name, email_verified)
+    INSERT INTO public.profiles (id, email, full_name, role, email_verified)
     VALUES (
         NEW.id,
         NEW.email,
         COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+        COALESCE(NEW.raw_user_meta_data->>'role', 'user'),
         NEW.email_confirmed_at IS NOT NULL
     );
     RETURN NEW;

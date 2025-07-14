@@ -78,7 +78,29 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    return {"email": user_email, "user_id": payload.get("user_id")}
+    return {
+        "email": user_email,
+        "user_id": payload.get("user_id"),
+        "role": payload.get("role", "user")
+    }
+
+def get_current_admin(current_user: dict = Depends(get_current_user)) -> dict:
+    """Get current authenticated admin user"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
+
+def require_admin(current_user: dict = Depends(get_current_user)) -> dict:
+    """Dependency to require admin role"""
+    if current_user.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user
 
 def create_token_pair(user_data: dict) -> dict:
     """Create both access and refresh tokens"""

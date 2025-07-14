@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.models.auth import (
-    LoginData, RegisterData, TokenResponse, RefreshTokenRequest,
+    LoginData, RegisterData, AdminRegisterData, TokenResponse, RefreshTokenRequest,
     PasswordResetRequest, ChangePasswordRequest, UserProfile,
-    UpdateProfileRequest, AuthResponse
+    UpdateProfileRequest, ProfilePatch, AuthResponse, UserRole
 )
 from app.core.security import (
     create_token_pair, verify_token, get_current_user,
@@ -85,7 +85,6 @@ async def register(data: RegisterData):
                 "email": data.email,
                 "full_name": data.full_name,
                 "phone": data.phone,
-                "role": "user",  # Default role for new users
                 "created_at": datetime.utcnow().isoformat(),
                 "is_active": True,
                 "email_verified": response.user.email_confirmed_at is not None
@@ -138,6 +137,125 @@ async def register(data: RegisterData):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Registration failed"
+        )
+
+@router.post("/admin/register", response_model=AuthResponse)
+async def register_admin(data: AdminRegisterData):
+    """Register a new admin user"""
+    try:
+        from app.core.config import ADMIN_SECRET
+
+        auth_logger.info(f"Admin registration attempt for {data.email}")
+
+        # Verify admin secret
+        if data.admin_secret != ADMIN_SECRET:
+            log_auth_event("ADMIN_REGISTER", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Invalid admin secret"
+            )
+
+        # Check if user already exists
+        existing_users = await db.get_records("profiles", {"email": data.email})
+        if existing_users:
+            log_auth_event("ADMIN_REGISTER", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User with this email already exists"
+            )
+
+        # Register with Supabase Auth
+        try:
+            logger.info(f"Attempting Supabase admin registration for {data.email}")
+            response = supabase.auth.sign_up({
+                "email": data.email,
+                "password": data.password,
+                "options": {
+                    "data": {
+                        "full_name": data.full_name,
+                        "phone": data.phone,
+                        "role": "admin"
+                    }
+                }
+            })
+            logger.info(f"Supabase admin registration response for {data.email}: user_id={response.user.id if response.user else 'None'}")
+        except Exception as auth_error:
+            error_message = str(auth_error)
+            logger.error(f"Supabase admin registration failed for {data.email}: {error_message}")
+
+            if "429" in error_message or "rate limit" in error_message.lower():
+                log_auth_event("ADMIN_REGISTER", data.email, False)
+                raise HTTPException(
+                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                    detail="Too many registration attempts. Please wait a moment and try again."
+                )
+            else:
+                log_auth_event("ADMIN_REGISTER", data.email, False)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Admin registration failed: {error_message}"
+                )
+
+        if response.user:
+            logger.info(f"Admin user created in Supabase auth: {response.user.id}")
+
+            # Create admin profile in our database
+            profile_data = {
+                "id": response.user.id,
+                "email": data.email,
+                "full_name": data.full_name,
+                "phone": data.phone,
+                "role": UserRole.ADMIN,
+                "created_at": datetime.utcnow().isoformat(),
+                "is_active": True,
+                "email_verified": response.user.email_confirmed_at is not None
+            }
+
+            try:
+                # Use admin client to create profile
+                logger.info(f"Creating admin profile for user {response.user.id}")
+                from app.db.client import admin_supabase
+                admin_response = admin_supabase.table("profiles").insert(profile_data).execute()
+
+                if admin_response.data:
+                    logger.info(f"Admin profile created successfully for {data.email}")
+                    log_auth_event("ADMIN_REGISTER", data.email, True)
+                    return AuthResponse(
+                        message="Admin user registered successfully. Please check your email for verification.",
+                        user=UserProfile(**profile_data)
+                    )
+                else:
+                    logger.warning(f"Admin profile creation returned no data for {data.email}")
+                    log_auth_event("ADMIN_REGISTER", data.email, True)
+                    return AuthResponse(
+                        message="Admin user registered successfully. Profile will be created on first login.",
+                        user=None
+                    )
+            except Exception as profile_error:
+                logger.error(f"Admin profile creation failed for {data.email}: {str(profile_error)}")
+                log_auth_event("ADMIN_REGISTER", data.email, True)
+                return AuthResponse(
+                    message="Admin user registered successfully. Profile will be created on first login.",
+                    user=None
+                )
+        else:
+            error_message = "Admin registration failed"
+            if hasattr(response, 'error') and response.error:
+                error_message = response.error.message
+
+            log_auth_event("ADMIN_REGISTER", data.email, False)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error_message
+            )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(e, f"Admin registration for {data.email}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Admin registration failed"
         )
 
 @router.post("/login", response_model=AuthResponse)
@@ -193,7 +311,6 @@ async def login(data: LoginData):
                     "email": data.email,
                     "full_name": response.user.user_metadata.get("full_name", ""),
                     "phone": response.user.user_metadata.get("phone", ""),
-                    "role": "user",  # Default role for new users
                     "created_at": datetime.utcnow().isoformat(),
                     "is_active": True,
                     "email_verified": response.user.email_confirmed_at is not None
@@ -217,10 +334,11 @@ async def login(data: LoginData):
                     detail="Account is deactivated"
                 )
             
-            # Create tokens
+            # Create tokens with role
             token_data = {
                 "sub": data.email,
-                "user_id": response.user.id
+                "user_id": response.user.id,
+                "role": profile_data.get("role", "user")
             }
             tokens = create_token_pair(token_data)
             
@@ -302,63 +420,62 @@ async def logout(current_user: dict = Depends(get_current_user)):
 async def get_profile(current_user: dict = Depends(get_current_user)):
     """Get current user profile"""
     try:
-        user_id = current_user["user_id"]
-        logger.info(f"Getting profile for user: {user_id}")
+        logger.info(f"Getting profile for user: {current_user['user_id']}")
 
-        # Try to get profile with admin client first (bypasses RLS)
-        profile_data = await db.get_record_admin("profiles", user_id)
+        # Try to get profile from database
+        try:
+            profile_data = await db.get_record("profiles", current_user["user_id"])
+        except Exception as db_error:
+            logger.error(f"Database error getting profile: {str(db_error)}")
+            # Try using supabase client directly
+            from app.db.client import supabase
+            response = supabase.table("profiles").select("*").eq("id", current_user["user_id"]).execute()
+            profile_data = response.data[0] if response.data else None
 
         if not profile_data:
-            # If profile doesn't exist, try to create it from the current user data
-            logger.info(f"Profile not found for user {user_id}, attempting to create one")
-
-            # Get user info from current_user token data
-            new_profile_data = {
-                "id": user_id,
-                "email": current_user.get("email", ""),
-                "full_name": current_user.get("user_metadata", {}).get("full_name", ""),
-                "role": "user",
-                "is_active": True,
-                "email_verified": current_user.get("email_confirmed_at") is not None,
+            # Create a basic profile if it doesn't exist
+            logger.warning(f"Profile not found for user {current_user['user_id']}, creating basic profile")
+            basic_profile = {
+                "id": current_user["user_id"],
+                "email": current_user["email"],
+                "full_name": "",
+                "phone": None,
+                "role": current_user.get("role", "user"),
                 "created_at": datetime.utcnow().isoformat(),
-                "updated_at": datetime.utcnow().isoformat()
+                "is_active": True,
+                "email_verified": False
             }
 
             try:
-                profile_data = await db.create_record_admin("profiles", new_profile_data)
-                if profile_data:
-                    logger.info(f"Profile created successfully for user {user_id}")
+                # Try to create the profile
+                from app.db.client import admin_supabase
+                admin_response = admin_supabase.table("profiles").insert(basic_profile).execute()
+                if admin_response.data:
+                    profile_data = admin_response.data[0]
                 else:
-                    logger.warning(f"Profile creation returned no data for user {user_id}")
-                    profile_data = new_profile_data
+                    profile_data = basic_profile
             except Exception as create_error:
-                logger.error(f"Failed to create profile for user {user_id}: {str(create_error)}")
-                # Use the profile data we prepared
-                profile_data = new_profile_data
-
-        if not profile_data:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found and could not be created"
-            )
+                logger.error(f"Failed to create profile: {str(create_error)}")
+                # Return basic profile data even if creation fails
+                profile_data = basic_profile
 
         return UserProfile(**profile_data)
 
     except HTTPException:
         raise
     except Exception as e:
-        log_error(e, f"Getting profile for {current_user.get('email', 'unknown')}")
+        logger.error(f"Error getting profile for user {current_user['user_id']}: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to retrieve profile"
+            detail="Failed to get profile"
         )
 
-@router.put("/profile", response_model=UserProfile)
+@router.patch("/profile", response_model=UserProfile)
 async def update_profile(
-    profile_data: UpdateProfileRequest,
+    profile_data: ProfilePatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update user profile"""
+    """Partially update user profile - only safe fields allowed"""
     try:
         update_dict = profile_data.dict(exclude_unset=True)
         update_dict["updated_at"] = datetime.utcnow().isoformat()

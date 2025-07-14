@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Product Creation</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Debug Product Creation Test</h1>
+    
+    <button onclick="testProductCreation()">Test Product Creation</button>
+    
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
+
+    <script>
+        function testProductCreation() {
+            $('#result').html('Testing...');
+            
+            $.ajax({
+                url: 'http://localhost:8080/debug/create-test-product',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                },
+                success: function(data) {
+                    $('#result').html('<pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                },
+                error: function(xhr, status, error) {
+                    $('#result').html('<pre>Error: ' + xhr.responseText + '</pre>');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

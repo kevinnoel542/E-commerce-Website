@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Flow</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E-Commerce Login Flow Test</h1>
+        
+        <div class="test-section info">
+            <h3>Test Credentials</h3>
+            <p><strong>Email:</strong> itslugenge96@gmail.com</p>
+            <p><strong>Password:</strong> user123</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Steps</h3>
+            <button onclick="testFastAPILogin()">1. Test FastAPI Login</button>
+            <button onclick="testLaravelLoginPage()">2. Test Laravel Login Page</button>
+            <button onclick="testCompleteFlow()">3. Test Complete Login Flow</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<h4>${title}</h4><pre>${content}</pre>`;
+            results.appendChild(div);
+        }
+
+        async function testFastAPILogin() {
+            addResult('Testing FastAPI Login...', 'Sending request to FastAPI backend...');
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'itslugenge96@gmail.com',
+                        password: 'user123'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult('FastAPI Login Success', 
+                        `Status: ${response.status}\n` +
+                        `User: ${data.user.email}\n` +
+                        `Role: ${data.user.role}\n` +
+                        `Token: ${data.tokens.access_token ? 'Present' : 'Missing'}`, 
+                        'success'
+                    );
+                } else {
+                    addResult('FastAPI Login Failed', 
+                        `Status: ${response.status}\n` +
+                        `Error: ${data.detail || 'Unknown error'}`, 
+                        'error'
+                    );
+                }
+            } catch (error) {
+                addResult('FastAPI Login Error', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLaravelLoginPage() {
+            addResult('Testing Laravel Login Page...', 'Checking if login page loads...');
+            
+            try {
+                const response = await fetch('http://localhost:8080/login');
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    const hasForm = html.includes('action="/auth/login"');
+                    const hasCSRF = html.includes('name="_token"');
+                    
+                    addResult('Laravel Login Page Test', 
+                        `Status: ${response.status}\n` +
+                        `Has Login Form: ${hasForm}\n` +
+                        `Has CSRF Token: ${hasCSRF}`, 
+                        hasForm && hasCSRF ? 'success' : 'error'
+                    );
+                } else {
+                    addResult('Laravel Login Page Failed', `Status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('Laravel Login Page Error', `Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testCompleteFlow() {
+            addResult('Testing Complete Login Flow...', 'This will simulate form submission...');
+            
+            // Note: This is a simplified test. In a real scenario, you would need to:
+            // 1. Get CSRF token from login page
+            // 2. Submit form with proper headers
+            // 3. Follow redirects
+            // 4. Check final destination
+            
+            addResult('Complete Flow Test', 
+                'Manual test required:\n' +
+                '1. Go to http://localhost:8080/login\n' +
+                '2. Enter credentials: itslugenge96@gmail.com / user123\n' +
+                '3. Click Login\n' +
+                '4. Check if redirected to user dashboard\n' +
+                '5. Verify user information is displayed', 
+                'info'
+            );
+        }
+
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            addResult('Login Flow Test Started', 'Ready to test the authentication system...');
+        };
+    </script>
+</body>
+</html>

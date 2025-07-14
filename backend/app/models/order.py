@@ -36,8 +36,16 @@ class OrderItemBase(BaseModel):
             raise ValueError('Unit price must be greater than 0')
         return v
 
-class OrderItemCreate(OrderItemBase):
-    pass
+class OrderItemCreate(BaseModel):
+    """Simplified model for creating order items - price comes from product database"""
+    product_id: str
+    quantity: int
+
+    @validator('quantity')
+    def validate_quantity(cls, v):
+        if v <= 0:
+            raise ValueError('Quantity must be greater than 0')
+        return v
 
 class OrderItem(OrderItemBase):
     id: str
@@ -82,6 +90,18 @@ class OrderUpdate(BaseModel):
     tracking_number: Optional[str] = None
     notes: Optional[str] = None
 
+class OrderPatch(BaseModel):
+    """Model for partial order updates by customers - only allows safe fields"""
+    notes: Optional[str] = None
+    # Note: status, payment_status, tracking_number excluded for customer safety
+
+class OrderAdminPatch(BaseModel):
+    """Model for partial order updates by admins - allows more fields"""
+    status: Optional[OrderStatus] = None
+    payment_status: Optional[PaymentStatus] = None
+    tracking_number: Optional[str] = None
+    notes: Optional[str] = None
+
 class Order(BaseModel):
     id: str
     user_id: str
@@ -103,6 +123,12 @@ class Order(BaseModel):
     
     class Config:
         from_attributes = True
+
+class PaymentRequest(BaseModel):
+    order_id: str
+    payment_method: str = "card"  # card, bank_transfer, mobile_money
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
 
 class OrderResponse(BaseModel):
     id: str

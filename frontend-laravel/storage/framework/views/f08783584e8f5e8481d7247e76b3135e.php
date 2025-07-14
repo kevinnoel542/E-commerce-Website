@@ -1,327 +1,226 @@
-<?php if (isset($component)) { $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54 = $attributes; } ?>
-<?php $component = App\View\Components\AppLayout::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('app-layout'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\App\View\Components\AppLayout::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-     <?php $__env->slot('header', null, []); ?> 
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            <?php echo e(__('Dashboard')); ?>
+<!DOCTYPE html>
+<html lang="en">
 
-        </h2>
-     <?php $__env->endSlot(); ?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title>Dashboard - E-Commerce</title>
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
-            <!-- Welcome Section -->
-            <div
-                class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-sm border border-blue-200 p-6 flex items-center space-x-4">
-                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span class="text-white text-2xl font-bold">
-                        <?php echo e(strtoupper(substr($user['full_name'], 0, 1))); ?><?php echo e(strtoupper(substr(explode(' ', $user['full_name'])[1] ?? '', 0, 1))); ?>
+<body class="bg-gray-50">
+    <!-- Use Unified Navigation -->
+    <?php echo $__env->make('layouts.navigation', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-                    </span>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Title -->
+        <h1 class="text-2xl font-bold text-gray-900 mb-8">Dashboard</h1>
+
+        <!-- Welcome Section -->
+        <div class="bg-blue-50 rounded-lg p-6 mb-8 flex items-center">
+            <div class="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-lg font-bold mr-4">
+                <?php echo e(strtoupper(substr($user['full_name'] ?? ($user['email'] ?? 'U'), 0, 2))); ?>
+
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900">Welcome back, <?php echo e($user['full_name'] ?? ($user['email'] ?? 'User')); ?>!</h2>
+                <p class="text-gray-600">Here's your account overview and quick actions</p>
+            </div>
+        </div>
+
+        <!-- Quick Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Orders Card -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Total Orders</p>
+                        <p class="text-2xl font-bold text-gray-900"><?php echo e(count($orders ?? [])); ?></p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="bi bi-box-seam text-blue-600 text-xl"></i>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Welcome back, <?php echo e($user['full_name']); ?>!</h1>
-                    <p class="text-gray-600">Here's your account overview and quick actions</p>
+                <div class="mt-4">
+                    <a href="<?php echo e(route('orders.index')); ?>" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View All Orders →
+                    </a>
                 </div>
             </div>
 
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="user-stats">
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 hover:shadow-md transition cursor-pointer"
-                    onclick="window.location='<?php echo e(route('orders.index')); ?>'">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <i class="bi bi-cart-fill text-2xl text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900" id="orders-count">Loading...</p>
-                            <p class="text-sm text-gray-600">Total Orders</p>
-                        </div>
+            <!-- Pending Payments Card -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Pending Payments</p>
+                        <p class="text-2xl font-bold text-gray-900"><?php echo e($pendingPayments ?? 0); ?></p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="bi bi-credit-card text-yellow-600 text-xl"></i>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 hover:shadow-md transition">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <i class="bi bi-credit-card-fill text-2xl text-yellow-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900" id="pending-payments">Loading...</p>
-                            <p class="text-sm text-gray-600">Pending Payments</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 hover:shadow-md transition cursor-pointer"
-                    onclick="window.location='<?php echo e(route('profile.edit')); ?>'">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <i class="bi bi-geo-alt-fill text-2xl text-green-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900" id="addresses-count">Loading...</p>
-                            <p class="text-sm text-gray-600">Saved Addresses</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 hover:shadow-md transition cursor-pointer"
-                    onclick="window.location='<?php echo e(route('wishlist.index')); ?>'">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                            <i class="bi bi-heart-fill text-2xl text-red-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-2xl font-bold text-gray-900" id="wishlist-count">Loading...</p>
-                            <p class="text-sm text-gray-600">Wishlist Items</p>
-                        </div>
-                    </div>
+                <div class="mt-4">
+                    <span class="text-yellow-600 text-sm font-medium"><?php echo e($pendingPayments ?? 0); ?> need attention</span>
                 </div>
             </div>
 
-            <!-- Recent Orders -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h2 class="text-xl font-semibold text-gray-900">Recent Orders</h2>
-                    <a href="<?php echo e(route('orders.index')); ?>" class="text-sm text-blue-600 hover:text-blue-700">View All
-                        Orders →</a>
-                </div>
-                <div class="p-6" id="recent-orders">
-                    <div class="text-center py-8 text-gray-500">
-                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                        <p>Loading recent orders...</p>
+            <!-- Addresses Card -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Saved Addresses</p>
+                        <p class="text-2xl font-bold text-gray-900"><?php echo e($addressCount ?? 1); ?></p>
                     </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="bi bi-geo-alt text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="<?php echo e(route('profile.edit')); ?>" class="text-green-600 hover:text-green-800 text-sm font-medium">
+                        Manage Addresses →
+                    </a>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div class="p-6 border-b border-gray-100">
-                    <h2 class="text-xl font-semibold text-gray-900">Quick Actions</h2>
+            <!-- Wishlist Card -->
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Wishlist Items</p>
+                        <p class="text-2xl font-bold text-gray-900"><?php echo e($wishlistCount ?? 0); ?></p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="bi bi-heart text-purple-600 text-xl"></i>
+                    </div>
                 </div>
-                <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <a href="<?php echo e(route('products.index')); ?>"
-                        class="group text-center p-4 rounded-lg hover:bg-gray-50 transition">
-                        <div
-                            class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200">
-                            <i class="bi bi-bag-fill text-3xl text-blue-600"></i>
-                        </div>
-                        <h3 class="font-semibold text-gray-900">Continue Shopping</h3>
-                        <p class="text-sm text-gray-600">Browse our products</p>
-                    </a>
-
-                    <a href="<?php echo e(route('profile.edit')); ?>"
-                        class="group text-center p-4 rounded-lg hover:bg-gray-50 transition">
-                        <div
-                            class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200">
-                            <i class="bi bi-person-fill text-3xl text-green-600"></i>
-                        </div>
-                        <h3 class="font-semibold text-gray-900">Update Profile</h3>
-                        <p class="text-sm text-gray-600">Manage your settings</p>
-                    </a>
-
-                    <a href="<?php echo e(route('wishlist.index')); ?>"
-                        class="group text-center p-4 rounded-lg hover:bg-gray-50 transition">
-                        <div
-                            class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200">
-                            <i class="bi bi-heart-fill text-3xl text-red-600"></i>
-                        </div>
-                        <h3 class="font-semibold text-gray-900">View Wishlist</h3>
-                        <p class="text-sm text-gray-600">See saved items</p>
-                    </a>
-
-                    <a href="<?php echo e(route('orders.index')); ?>"
-                        class="group text-center p-4 rounded-lg hover:bg-gray-50 transition">
-                        <div
-                            class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-gray-200">
-                            <i class="bi bi-box-seam-fill text-3xl text-purple-600"></i>
-                        </div>
-                        <h3 class="font-semibold text-gray-900">Track Orders</h3>
-                        <p class="text-sm text-gray-600">Check order status</p>
+                <div class="mt-4">
+                    <a href="<?php echo e(route('wishlist.index')); ?>" class="text-purple-600 hover:text-purple-800 text-sm font-medium">
+                        View Wishlist →
                     </a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            loadUserStats();
-            loadRecentOrders();
-        });
-
-        async function loadUserStats() {
-            try {
-                // Load user orders count from FastAPI
-                const ordersResponse = await fetch('/api/user/orders/count', {
-                    headers: {
-                        'Authorization': 'Bearer ' + '<?php echo e(Session::get('access_token')); ?>',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                // Load user stats from FastAPI
-                const statsResponse = await fetch('/api/user/stats', {
-                    headers: {
-                        'Authorization': 'Bearer ' + '<?php echo e(Session::get('access_token')); ?>',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                // Update orders count
-                if (ordersResponse.ok) {
-                    const ordersData = await ordersResponse.json();
-                    document.getElementById('orders-count').textContent = ordersData.total || '0';
-                } else {
-                    document.getElementById('orders-count').textContent = '0';
-                }
-
-                // Update other stats
-                if (statsResponse.ok) {
-                    const statsData = await statsResponse.json();
-                    document.getElementById('pending-payments').textContent = statsData.pending_payments || '0';
-                    document.getElementById('addresses-count').textContent = statsData.addresses_count || '0';
-                    document.getElementById('wishlist-count').textContent = statsData.wishlist_count || '0';
-                } else {
-                    document.getElementById('pending-payments').textContent = '0';
-                    document.getElementById('addresses-count').textContent = '0';
-                    document.getElementById('wishlist-count').textContent = '0';
-                }
-
-            } catch (error) {
-                console.error('Error loading user stats:', error);
-                // Fallback to zero values
-                document.getElementById('orders-count').textContent = '0';
-                document.getElementById('pending-payments').textContent = '0';
-                document.getElementById('addresses-count').textContent = '0';
-                document.getElementById('wishlist-count').textContent = '0';
-            }
-        }
-
-        async function loadRecentOrders() {
-            try {
-                // Call FastAPI /orders endpoint with JWT
-                const response = await fetch('/api/user/orders', {
-                    headers: {
-                        'Authorization': 'Bearer ' + '<?php echo e(Session::get('access_token')); ?>',
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-
-                    if (data.orders && data.orders.length > 0) {
-                        // Display recent orders
-                        let ordersHtml = '<div class="space-y-4">';
-
-                        // Show only the first 3 recent orders
-                        const recentOrders = data.orders.slice(0, 3);
-
-                        recentOrders.forEach(order => {
-                            const statusClass = getOrderStatusClass(order.status);
-                            const formattedDate = new Date(order.created_at).toLocaleDateString();
-
-                            ordersHtml += `
-                                <div class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                                                <i class="bi bi-box-seam-fill text-blue-600"></i>
-                                            </div>
-                                            <div>
-                                                <p class="font-semibold text-gray-900">Order #${order.id}</p>
-                                                <p class="text-sm text-gray-600">${formattedDate}</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center space-x-4">
-                                            <div class="text-right">
-                                                <p class="font-bold text-gray-900">$${order.total}</p>
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">
-                                                    ${order.status}
-                                                </span>
-                                            </div>
-                                            <a href="/orders/${order.id}" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
-                                                View Details
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-
-                        ordersHtml += '</div>';
-                        ordersHtml += `
-                            <div class="mt-6 text-center">
-                                <a href="<?php echo e(route('orders.index')); ?>" class="text-blue-600 hover:text-blue-700 font-medium">
-                                    View All Orders →
-                                </a>
-                            </div>
-                        `;
-
-                        document.getElementById('recent-orders').innerHTML = ordersHtml;
-                    } else {
-                        // No orders found
-                        showNoOrdersMessage();
-                    }
-                } else {
-                    // API call failed
-                    showNoOrdersMessage();
-                }
-            } catch (error) {
-                console.error('Error loading recent orders:', error);
-                showNoOrdersMessage();
-            }
-        }
-
-        function getOrderStatusClass(status) {
-            switch (status.toLowerCase()) {
-                case 'delivered':
-                case 'completed':
-                    return 'bg-green-100 text-green-800';
-                case 'shipped':
-                case 'processing':
-                    return 'bg-blue-100 text-blue-800';
-                case 'pending':
-                    return 'bg-yellow-100 text-yellow-800';
-                case 'cancelled':
-                case 'failed':
-                    return 'bg-red-100 text-red-800';
-                default:
-                    return 'bg-gray-100 text-gray-800';
-            }
-        }
-
-        function showNoOrdersMessage() {
-            document.getElementById('recent-orders').innerHTML = `
-                <div class="text-center py-8 text-gray-500">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="bi bi-box-seam-fill text-3xl text-gray-500"></i>
-                    </div>
-                    <p class="text-lg font-medium text-gray-900 mb-2">No orders yet</p>
-                    <p class="text-sm text-gray-600 mb-4">Start shopping to see your orders here</p>
-                    <a href="<?php echo e(route('products.index')); ?>" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-                        Browse Products
+        <!-- Recent Orders -->
+        <div class="bg-white rounded-lg shadow-sm mb-8">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-900">Recent Orders</h3>
+                    <a href="<?php echo e(route('orders.index')); ?>" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View All Orders →
                     </a>
                 </div>
-            `;
-        }
-    </script>
- <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $attributes = $__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__attributesOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54)): ?>
-<?php $component = $__componentOriginal9ac128a9029c0e4701924bd2d73d7f54; ?>
-<?php unset($__componentOriginal9ac128a9029c0e4701924bd2d73d7f54); ?>
-<?php endif; ?>
+            </div>
+            <div class="p-6">
+                <?php if(count($orders ?? []) > 0): ?>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Order #</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Date</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Items</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Total</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Status</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = array_slice($orders, 0, 5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                        <td class="py-3 px-4">
+                                            <span class="font-medium text-gray-900">#<?php echo e($order['order_number'] ?? 'N/A'); ?></span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="text-gray-600"><?php echo e(date('M j, Y', strtotime($order['created_at'] ?? 'now'))); ?></span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="text-gray-600"><?php echo e(count($order['items'] ?? [])); ?> items</span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="font-medium text-gray-900">TZS <?php echo e(number_format($order['total_amount'] ?? 0, 2)); ?></span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="text-xs px-2 py-1 rounded-full 
+                                                <?php if(($order['status'] ?? '') === 'delivered'): ?> bg-green-100 text-green-800
+                                                <?php elseif(($order['status'] ?? '') === 'shipped'): ?> bg-blue-100 text-blue-800
+                                                <?php elseif(($order['status'] ?? '') === 'pending'): ?> bg-yellow-100 text-yellow-800
+                                                <?php elseif(($order['status'] ?? '') === 'cancelled'): ?> bg-red-100 text-red-800
+                                                <?php else: ?> bg-gray-100 text-gray-800 <?php endif; ?>">
+                                                <?php echo e(ucfirst($order['status'] ?? 'unknown')); ?>
+
+                                            </span>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <a href="<?php echo e(route('orders.show', $order['id'] ?? 1)); ?>" 
+                                               class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                View Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-8">
+                        <i class="bi bi-box-seam text-gray-400 text-3xl mb-2"></i>
+                        <p class="text-gray-500 mb-4">No orders yet</p>
+                        <a href="<?php echo e(route('products.index')); ?>" 
+                           class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Start Shopping
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Shop Now -->
+            <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+                <div class="bg-blue-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <i class="bi bi-shop text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Continue Shopping</h3>
+                <p class="text-gray-600 text-sm mb-4">Discover new products and great deals</p>
+                <a href="<?php echo e(route('products.index')); ?>" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                    Browse Products
+                </a>
+            </div>
+
+            <!-- Track Orders -->
+            <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+                <div class="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <i class="bi bi-truck text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Track Your Orders</h3>
+                <p class="text-gray-600 text-sm mb-4">Check the status of your recent orders</p>
+                <a href="<?php echo e(route('orders.index')); ?>" 
+                   class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                    View Orders
+                </a>
+            </div>
+
+            <!-- Manage Profile -->
+            <div class="bg-white rounded-lg shadow-sm p-6 text-center">
+                <div class="bg-purple-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <i class="bi bi-person-gear text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Manage Profile</h3>
+                <p class="text-gray-600 text-sm mb-4">Update your account information</p>
+                <a href="<?php echo e(route('profile.edit')); ?>" 
+                   class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
 <?php /**PATH C:\Users\HACKER JOE\Desktop\MAIN FOLDER\E-commerce FASTAPI AND LARAVEL\frontend-laravel\resources\views/dashboard/user.blade.php ENDPATH**/ ?>

@@ -1,9 +1,12 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from typing import Dict, Any
-from app.services.payment_service import payment_service
 from app.core.security import get_current_user
 from app.core.logging import log_request, payment_logger, log_payment_event
+from app.services.payment_service import payment_service
+import stripe
+import logging
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/initiate")
@@ -15,19 +18,29 @@ async def initiate_payment(
 ):
     """Initiate a payment (deprecated - use order payment endpoint instead)"""
     log_request("POST", "/api/v1/payments/initiate", current_user["email"])
-    
+
     # This endpoint is kept for backward compatibility
     # In practice, payments should be created through the orders endpoint
-    
-    payment_result = await payment_service.create_payment_link(
-        email=email,
-        amount=amount,
-        order_id=order_id,
-        customer_name=current_user.get("full_name", ""),
-        phone=""
-    )
-    
-    return payment_result
+
+    try:
+        from app.models.payment import PaymentCreate
+
+        payment_data = PaymentCreate(
+            order_id=order_id,
+            amount=str(amount),
+            currency="usd",
+            customer_email=email
+        )
+
+        payment_result = await payment_service.create_checkout_session(payment_data)
+        return payment_result
+
+    except Exception as e:
+        logger.error(f"Payment initiation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to initiate payment"
+        )
 
 @router.get("/verify/{tx_ref}")
 async def verify_payment(
@@ -69,31 +82,37 @@ async def get_payment_status(
 
 @router.post("/webhook")
 async def handle_payment_webhook(request: Request):
-    """Handle Flutterwave payment webhooks"""
+    """Handle Stripe payment webhooks"""
     try:
         # Get the raw body for webhook verification
         body = await request.body()
-        
-        # Parse JSON data
-        webhook_data = await request.json()
-        
-        payment_logger.info(f"Webhook received: {webhook_data.get('event', 'unknown')}")
-        
-        # In production, you should verify the webhook signature
-        # webhook_signature = request.headers.get("verif-hash")
-        # if not verify_webhook_signature(body, webhook_signature):
-        #     raise HTTPException(status_code=400, detail="Invalid webhook signature")
-        
-        # Process the webhook
-        success = await payment_service.handle_webhook(webhook_data)
-        
-        if success:
-            return {"status": "success", "message": "Webhook processed"}
-        else:
-            return {"status": "ignored", "message": "Webhook ignored"}
-    
+
+        # Get Stripe signature from headers
+        sig_header = request.headers.get("stripe-signature")
+
+        if not sig_header:
+            logger.error("Missing Stripe signature header")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Missing signature header"
+            )
+
+        logger.info("Processing Stripe webhook")
+
+        # Process the Stripe webhook
+        result = await payment_service.handle_stripe_webhook(body, sig_header)
+
+        logger.info(f"Stripe webhook processed successfully: {result}")
+        return {"status": "success", "message": "Webhook processed"}
+
+    except stripe.error.SignatureVerificationError as e:
+        logger.error(f"Stripe signature verification failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid signature"
+        )
     except Exception as e:
-        payment_logger.error(f"Webhook processing error: {str(e)}")
+        logger.error(f"Webhook processing error: {str(e)}")
         # Return 200 to prevent webhook retries for processing errors
         return {"status": "error", "message": "Webhook processing failed"}
 
@@ -154,62 +173,68 @@ async def get_payment_history(
 async def get_payment_methods():
     """Get available payment methods"""
     log_request("GET", "/api/v1/payments/methods")
-    
-    # Return available payment methods supported by Flutterwave
+
+    # Return available payment methods supported by Stripe
     return {
         "methods": [
             {
                 "id": "card",
                 "name": "Credit/Debit Card",
-                "description": "Pay with Visa, Mastercard, or other cards",
+                "description": "Pay with Visa, Mastercard, American Express, and other cards",
                 "enabled": True
             },
             {
-                "id": "mobilemoney",
-                "name": "Mobile Money",
-                "description": "Pay with mobile money services",
+                "id": "apple_pay",
+                "name": "Apple Pay",
+                "description": "Pay with Apple Pay",
                 "enabled": True
             },
             {
-                "id": "banktransfer",
-                "name": "Bank Transfer",
-                "description": "Direct bank transfer",
+                "id": "google_pay",
+                "name": "Google Pay",
+                "description": "Pay with Google Pay",
                 "enabled": True
             },
             {
-                "id": "ussd",
-                "name": "USSD",
-                "description": "Pay using USSD codes",
+                "id": "link",
+                "name": "Link",
+                "description": "Pay with Link by Stripe",
                 "enabled": True
             }
         ],
-        "currency": "TZS",
-        "country": "Tanzania"
+        "currency": "USD",
+        "country": "US"
     }
 
 @router.get("/currencies")
 async def get_supported_currencies():
     """Get supported currencies"""
     log_request("GET", "/api/v1/payments/currencies")
-    
+
     return {
         "currencies": [
-            {
-                "code": "TZS",
-                "name": "Tanzanian Shilling",
-                "symbol": "TSh",
-                "default": True
-            },
             {
                 "code": "USD",
                 "name": "US Dollar",
                 "symbol": "$",
-                "default": False
+                "default": True
             },
             {
                 "code": "EUR",
                 "name": "Euro",
                 "symbol": "€",
+                "default": False
+            },
+            {
+                "code": "GBP",
+                "name": "British Pound",
+                "symbol": "£",
+                "default": False
+            },
+            {
+                "code": "CAD",
+                "name": "Canadian Dollar",
+                "symbol": "C$",
                 "default": False
             }
         ]
@@ -265,7 +290,7 @@ async def get_payment_stats_admin(
             "pending_payments": len([p for p in all_payments if p["status"] == "pending"]),
             "failed_payments": len([p for p in all_payments if p["status"] == "failed"]),
             "total_amount": sum(Decimal(p["amount"]) for p in all_payments if p["status"] == "successful"),
-            "currency": "TZS"
+            "currency": "USD"
         }
         
         # Calculate success rate

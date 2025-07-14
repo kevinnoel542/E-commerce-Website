@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from typing import Optional
 from app.models.order import (
-    Order, OrderCreate, OrderUpdate, OrderListResponse, 
+    Order, OrderCreate, OrderUpdate, OrderPatch, OrderAdminPatch, OrderListResponse,
     Cart, CartSummary, OrderStatus, PaymentStatus
 )
 from app.services.order_service import order_service
@@ -65,17 +65,16 @@ async def get_order(
     
     return order
 
-@router.put("/{order_id}", response_model=Order)
+@router.patch("/{order_id}", response_model=Order)
 async def update_order(
     order_id: str,
-    order_data: OrderUpdate,
+    order_data: OrderPatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update an order (limited fields for customers)"""
-    log_request("PUT", f"/api/v1/orders/{order_id}", current_user["email"])
-    
-    # For regular users, only allow updating notes
-    # Admin users could update status, payment_status, etc.
+    """Partially update an order (customers can only update notes)"""
+    log_request("PATCH", f"/api/v1/orders/{order_id}", current_user["email"])
+
+    # Convert to OrderUpdate for service layer compatibility
     allowed_updates = OrderUpdate(notes=order_data.notes)
     
     updated_order = await order_service.update_order(
@@ -141,23 +140,28 @@ async def create_payment_for_order(
     from app.db.client import db
     profile = await db.get_record("profiles", current_user["user_id"])
     
-    # Create payment link
-    payment_result = await payment_service.create_payment_link(
-        email=current_user["email"],
-        amount=order.final_amount,
+    # Create payment checkout session
+    from app.models.payment import PaymentCreate
+
+    payment_data = PaymentCreate(
         order_id=order_id,
-        customer_name=profile.get("full_name", ""),
-        phone=profile.get("phone", "")
+        amount=order.final_amount,
+        currency="usd",  # or get from config
+        customer_email=current_user["email"],
+        description=f"Payment for Order #{order.order_number}"
     )
+
+    payment_result = await payment_service.create_checkout_session(payment_data)
     
     log_order_event("PAYMENT_INITIATED", order_id, current_user["email"])
     
     return {
-        "payment_link": payment_result["payment_link"],
-        "tx_ref": payment_result["tx_ref"],
+        "checkout_url": payment_result["checkout_url"],
+        "session_id": payment_result["session_id"],
         "amount": payment_result["amount"],
         "currency": payment_result["currency"],
-        "order_id": order_id
+        "order_id": order_id,
+        "status": payment_result["status"]
     }
 
 @router.get("/{order_id}/payment/status")
@@ -194,10 +198,12 @@ async def get_order_payment_status(
         "order_id": order_id,
         "payment_status": order.payment_status,
         "latest_payment": {
-            "tx_ref": latest_payment["tx_ref"],
+            "session_id": latest_payment.get("stripe_checkout_session_id"),
+            "payment_intent_id": latest_payment.get("stripe_payment_intent_id"),
             "amount": latest_payment["amount"],
             "currency": latest_payment["currency"],
             "status": latest_payment["status"],
+            "checkout_url": latest_payment.get("checkout_url"),
             "created_at": latest_payment["created_at"]
         },
         "payments": payments
@@ -270,19 +276,27 @@ async def get_all_orders_admin(
             detail="Failed to retrieve orders"
         )
 
-@router.put("/admin/{order_id}", response_model=Order)
+@router.patch("/admin/{order_id}", response_model=Order)
 async def update_order_admin(
     order_id: str,
-    order_data: OrderUpdate,
+    order_data: OrderAdminPatch,
     current_user: dict = Depends(get_current_user)
 ):
-    """Update any order (admin only)"""
-    log_request("PUT", f"/api/v1/orders/admin/{order_id}", current_user["email"])
-    
+    """Partially update any order (admin only) - allows more fields"""
+    log_request("PATCH", f"/api/v1/orders/admin/{order_id}", current_user["email"])
+
     # In a real app, check if user has admin privileges
     # For now, any authenticated user can access this
-    
-    updated_order = await order_service.update_order(order_id, order_data)
+
+    # Convert to OrderUpdate for service layer compatibility
+    admin_updates = OrderUpdate(
+        status=order_data.status,
+        payment_status=order_data.payment_status,
+        tracking_number=order_data.tracking_number,
+        notes=order_data.notes
+    )
+
+    updated_order = await order_service.update_order(order_id, admin_updates)
     
     if not updated_order:
         raise HTTPException(
